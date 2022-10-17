@@ -99,7 +99,7 @@
 ## 사용하는 기술
 
 - python (3.10.7)
-- Django (4.1.1)
+- Django (4.1.2)
 - html
 - css
 sqlite
