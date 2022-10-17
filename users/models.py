@@ -10,6 +10,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=30)
     nickname = models.CharField(max_length=50, blank=True)
     profile_image = models.ImageField()
+    kakao_id = models.CharField(max_length=256, null=True, blank=True)
     
     USERNAME_FIELD = 'email' 
     REQUIRED_FIELDS = ['username']
