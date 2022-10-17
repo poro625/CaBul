@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import User
 from django.contrib.auth import authenticate, login as loginsession
 from django.http import HttpResponse
@@ -30,8 +30,7 @@ def login(request):
         user = authenticate(request, email=email , password=password)
         if user is not None:
             loginsession(request, user)
-
-            return HttpResponse("로그인 성공")
+            return redirect('/')
 
         else:
             return HttpResponse("로그인 실패")
