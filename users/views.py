@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .models import User
 from django.contrib.auth import authenticate, login as loginsession
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 
 
 # Create your views here.
@@ -34,3 +36,21 @@ def login(request):
 
         else:
             return HttpResponse("로그인 실패")
+
+@login_required
+def logout(request):   #로그아웃 함수
+    auth.logout(request) # 인증 되어있는 정보를 없애기
+    return redirect("users/login")
+
+@login_required
+def delete(request):   #회원탈퇴
+    if request.user.is_authenticated:
+        request.user.delete()
+    return redirect('users/signup')
+
+def update(request): # 프로필 수정 페이지 접근
+    return render(request, 'profile_edit.html')
+
+def password(request): # 비밀번호 변경 페이지 접근
+    if request.method == "GET":
+        return render(request, 'profile_edit_password.html')
