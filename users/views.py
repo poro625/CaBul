@@ -14,11 +14,15 @@ def signup(request):
         nickname = request.POST.get('nickname')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
-        if password == password2:
-            User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
-            return render(request, 'login.html')
+        if password != password2:
+            return render(request, 'signup.html')
         else:
-            return HttpResponse("비밀번호가 틀렸습니다.")
+            exist_user = get_user_model().objects.filter(username=username)
+            if exist_user:
+                return render(request, 'signup.html')
+            else:
+                UserModel.objects.create_user(username=username, password=password, email=email, nickname=nickname)
+                return redirect('/sign-in') # 회원가입이 완료되었으므로 로그인 페이지로 이동
 
 
 def login(request):
