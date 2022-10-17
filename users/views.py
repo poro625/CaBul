@@ -14,7 +14,6 @@ import random
 import string
 
 
-
 # Create your views here.
 def signup(request):
     if request.method == 'GET':
@@ -25,7 +24,6 @@ def signup(request):
         nickname = request.POST.get('nickname')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
-        
         if password != password2:
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
         else:
