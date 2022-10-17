@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login as loginsession
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
+from django.contrib.auth import get_user_model
 
 
 # Create your views here.
@@ -23,8 +24,8 @@ def signup(request):
             if exist_user:
                 return render(request, 'signup.html')
             else:
-                UserModel.objects.create_user(username=username, password=password, email=email, nickname=nickname)
-                return redirect('/sign-in') # 회원가입이 완료되었으므로 로그인 페이지로 이동
+                User.objects.create_user(username=username, password=password, email=email, nickname=nickname)
+                return redirect('users:login') # 회원가입이 완료되었으므로 로그인 페이지로 이동
 
 
 def login(request):
@@ -64,3 +65,23 @@ def update(request, id):
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
         return render(request, 'profile_edit_password.html')
+
+
+
+@login_required
+def user_view(request):
+    if request.method == 'GET':
+        # 사용자를 불러오기, exclude와 request.user.username 를 사용해서 '로그인 한 사용자'를 제외하기
+        user_list = User.objects.all().exclude(username=request.user.username)
+        return render(request, 'follow.html', {'user_list': user_list})
+
+
+@login_required
+def user_follow(request, id):
+    me = request.user
+    click_user = User.objects.get(id=id)
+    if me in click_user.followee.all():
+        click_user.followee.remove(request.user)
+    else:
+        click_user.followee.add(request.user)
+    return redirect('users:user-list')      
