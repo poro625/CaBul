@@ -7,8 +7,6 @@ from django.contrib import auth, messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-from .forms import FileUploadForm
-from .models import FileUpload
 
 import re
 import requests
@@ -175,18 +173,3 @@ def get_profile(request, nickname):
     print(dir(request.user))
     context = {}
     return render(request, 'user/profile.html', context)
-
-def fileUpload(request):
-    if request.method == 'POST':
-        img = request.FILES["imgfile"]
-        fileupload = FileUpload(
-            profile_image=img,
-        )
-        fileupload.save()
-        return redirect('fileupload')
-    else:
-        fileuploadForm = FileUploadForm
-        context = {
-            'fileuploadForm': fileuploadForm,
-        }
-        return render(request, 'fileupload.html', context)
