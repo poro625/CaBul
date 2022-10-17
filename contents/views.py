@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from contents.models import Feed
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, TemplateView
 
 # Create your views here.
 
@@ -18,10 +19,27 @@ def Upload(request):
         my_feed.like = 0
         my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
         my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
-        # my_feed.tags = request.POST.get('tag', '').split(',')
-        # for tag in tags:
-        #     tag = tag.strip()
-        #     if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
-        #         my_feed.tags.add(tag)
         my_feed.save()
+        tags = request.POST.get('tag', '').split(',')
+        for tag in tags:
+            tag = tag.strip()
+            if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
+                my_feed.tags.add(tag)
         return redirect('/')
+
+
+class TagCloudTV(TemplateView):
+    template_name = 'taggit/tag_cloud_view.html'
+
+
+class TaggedObjectLV(ListView):
+    template_name = 'taggit/tag_with_post.html'
+    model = Feed
+
+    def get_queryset(self):
+        return Feed.objects.filter(tags__name=self.kwargs.get('tag'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tagname'] = self.kwargs['tag']
+        return context
