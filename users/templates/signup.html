@@ -18,6 +18,11 @@
     <input type="password" name="password2" placeholder="password">
     <input type="submit">
 </form>
+{% if error %}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+        {% endif %}
     
 </body>
 </html>
