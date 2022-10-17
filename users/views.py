@@ -6,6 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import auth, messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+
+import re
+import requests
+import random
+import string
+
 
 
 # Create your views here.
@@ -99,4 +106,70 @@ def password(request, id): # 비밀번호 변경 페이지 접근
                 return render(request, 'profile_edit_password.html', {'error':'새 비밀번호를 확인해주세요.'})
         else:
             return render(request, 'profile_edit_password.html', {'error':'비밀번호가 일치하지 않습니다'})
-        
+
+
+def kakao_social_login(request):
+    if request.method == 'GET':
+        client_id = '1d6d8f64503403d8949492c6632d2da3'
+        redirect_uri = 'http://127.0.0.1:8000/account/login/kakao/callback'
+        return redirect(
+            f'https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code'
+        )
+
+
+def kakao_social_login_callback(request):
+    try:
+        code = request.GET.get('code')
+        client_id = '1d6d8f64503403d8949492c6632d2da3'
+        redirect_uri = 'http://127.0.0.1:8000/account/login/kakao/callback'
+        token_request = requests.post(
+            'https://kauth.kakao.com/oauth/token', {'grant_type': 'authorization_code',
+                                                    'client_id': client_id, 'redierect_uri': redirect_uri, 'code': code}
+        )
+        # token_request = requests.get(
+        # f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={client_id}&redirect_uri={redirect_uri}&code={code}'
+        # )
+        token_json = token_request.json()
+
+        error = token_json.get('error', None)
+
+        if error is not None:
+            print(error)
+            return JsonResponse({"message": "INVALID_CODE"}, status=400)
+
+        access_token = token_json.get("access_token")
+
+    except KeyError:
+        return JsonResponse({"message": "INVALID_TOKEN"}, status=400)
+
+    except access_token.DoesNotExist:
+        return JsonResponse({"message": "INVALID_TOKEN"}, status=400)
+
+        #------get kakaotalk profile info------#
+
+    profile_request = requests.get(
+        "https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}"},
+    )
+    profile_json = profile_request.json()
+    kakao_id = profile_json.get('id')
+    username = profile_json['properties']['nickname']
+
+    if User.objects.filter(kakao_id=kakao_id).exists():
+        user = User.objects.get(kakao_id=kakao_id)
+        auth.login(request, user)  # 로그인 처리
+    else:
+        User.objects.create(
+            username=username,
+
+            kakao_id=kakao_id,
+        )
+        user = User.objects.get(kakao_id=kakao_id)
+        auth.login(request, user)
+    return redirect('/')
+
+
+def get_profile(request, nickname):
+    print(request)
+    print(dir(request.user))
+    context = {}
+    return render(request, 'user/profile.html', context)

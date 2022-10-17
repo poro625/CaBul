@@ -16,9 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from users.views import kakao_social_login, kakao_social_login_callback
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('', views.home, name='home'),
+    #로그인 요청을 보낼 url
+    path('account/login/kakao/', kakao_social_login, name='kakao_login'),
+    #받은 인가 코드로 접근 토근을 받아 유저의 정보를 가져올 url
+    path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'),
 ]
