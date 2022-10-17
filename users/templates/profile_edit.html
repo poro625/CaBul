@@ -8,8 +8,9 @@
     <div style="width: 65vw; height: 90vh; min-height: 1000px; margin: 30px auto auto auto; display: flex; flex-direction: row;">
         <div style="background-color: #ffffff; width: 15vw; height: 90vh; min-height: 1000px; border: solid 1px lightgray; border-radius: 10px 0 0 10px;">
             <div style="display: flex; flex-direction: column; margin-left: 30px;">
-                <div id="profile_user_edit" style="font-size: 16pt; margin-top: 30px; cursor: pointer;">프로필 편집</div>
-                <div id="user_password_change" style="font-size: 16pt; margin-top: 30px; cursor: pointer;">비밀번호 변경</div>
+                <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                <a class="nav-link" href="{% url 'users:password' user.id %}"> 비밀번호 변경 </a>
+    
                 <div style="font-size: 16pt; margin-top: 30px; color: red; cursor: pointer;"><a href="/delete" onclick="return confirm('정말 회원 탈퇴하시겠습니까?');" style="color: red; text-decoration: none;">회원 탈퇴</a></div>
             </div>
         </div>
@@ -25,7 +26,7 @@
             </div>
             <form></form>
             {% comment %} <form action="/user/edit/{{ user.id }}/" method='POST'> {% endcomment %}
-            <form action="" method="POST">
+            <form action="{% url 'users:update' user.id %}" method="POST">
                 {% csrf_token %}
                 <div style="display: flex; flex-direction: row;">
                     <div style="width: 15vw; height: 12vh; min-height: 120px; margin: 1vh 30px 0 0; text-align: right;"> <b>이름</b> </div>
@@ -44,8 +45,8 @@
                 </div> {% endcomment %}
     
                 <div style="display: flex; flex-direction: row;">
-                    <div style="width: 15vw; height: 4vh; min-height: 40px; margin: 1vh 30px 0 0; text-align: right;"> <b>이메일</b> </div>
-                    <div style="width: 35vw; height: 4vh; min-height: 40px;  margin-top: 1vh;"><input type="text" style="border: solid 1px lightgray; border-radius: 3px; width: 25vw;" name="email"></div>
+                    <div style="width: 15vw; height: 4vh; min-height: 40px; margin: 1vh 30px 0 0; text-align: right;"> <b>닉네임</b> </div>
+                    <div style="width: 35vw; height: 4vh; min-height: 40px;  margin-top: 1vh;"><input type="text" style="border: solid 1px lightgray; border-radius: 3px; width: 25vw;" name="nickname"></div>
                 </div>
     
                 <div style="display: flex; flex-direction: row;">
@@ -59,17 +60,6 @@
 
 
 <script>
-    $('#profile_user_edit').click(function () {
-        window.location.href = "/profile/edit";
-    })
-
-    $('#user_password_change').click(function () {
-        window.location.href = "/profile/edit/password";
-    })
-
-    $('#user_delete').click(function () {
-        window.location.href = "/delete";
-    })
 </script>
 
 

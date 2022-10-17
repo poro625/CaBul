@@ -33,14 +33,13 @@ def login(request):
         if user is not None:
             loginsession(request, user)
             return redirect('/')
-
         else:
             return HttpResponse("로그인 실패")
 
 @login_required
 def logout(request):   #로그아웃 함수
     auth.logout(request) # 인증 되어있는 정보를 없애기
-    return redirect("users/login")
+    return redirect("/")
 
 @login_required
 def delete(request):   #회원탈퇴
@@ -48,9 +47,16 @@ def delete(request):   #회원탈퇴
         request.user.delete()
     return redirect('users/signup')
 
-def update(request): # 프로필 수정 페이지 접근
-    return render(request, 'profile_edit.html')
+def update(request, id):
+    if request.method == 'GET':# 프로필 수정 페이지 접근
+        return render(request, 'profile_edit.html')
+    elif request.method =='POST':
+        user = User.objects.get(id=id)
+        user.username = request.POST.get('username')
+        user.nickname = request.POST.get('nickname')
+        user.save()
+        return redirect("/")
 
-def password(request): # 비밀번호 변경 페이지 접근
-    if request.method == "GET":
+def password(request, id): # 비밀번호 변경 페이지 접근
+    if request.method == 'GET':# 프로필 수정 페이지 접근
         return render(request, 'profile_edit_password.html')
