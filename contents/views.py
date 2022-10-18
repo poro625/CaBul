@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 @login_required
 def post(request):
@@ -159,3 +160,18 @@ def delete_comment(request, id ): # 댓글 삭제
     comment = request.POST.get('comment')
     feed.delete()
     return redirect('/')
+
+
+
+def likes(request, id):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, pk=id)
+
+        if comment.like.filter(pk=request.user.id).exists():
+            comment.like.remove(request.user)
+        else:
+            comment.like.add(request.user)
+
+            return redirect('contents:index') #
+            
+    return redirect('users:login')
