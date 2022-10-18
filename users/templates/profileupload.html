@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="main_body" style="height: 100vh;">
+    <div style="width: 65vw; height: 90vh; min-height: 1000px; margin: 30px auto auto auto; display: flex; flex-direction: row;">
+        <div style="background-color: #ffffff; width: 15vw; height: 90vh; min-height: 1000px; border: solid 1px lightgray; border-radius: 10px 0 0 10px;">
+            <div style="display: flex; flex-direction: column; margin-left: 30px;">
+                <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                <a class="nav-link" href="{% url 'users:profileupload' user.id %}"> 프로필 사진 변경 </a>
+                <a class="nav-link" href="{% url 'users:password' user.id %}"> 비밀번호 변경 </a>
+    
+                <div style="font-size: 16pt; margin-top: 30px; color: red; cursor: pointer;">
+                <a href="{% url 'users:delete' %}" onclick="return confirm('정말 회원 탈퇴하시겠습니까?');" style="color: red; text-decoration: none;">회원 탈퇴</a></div>
+            </div>
+        </div>
+        <div style="background-color: #ffffff; width: 50vw; height: 90vh; min-height: 1000px; border: solid 1px lightgray; border-radius: 0 10px 10px 0;">
+            <div style="display: flex; flex-direction: row;">
+                <div style="width: 15vw; height: 4vh; min-height: 40px; margin: 2.5vh 30px 0 0; text-align: right;">
+                    <img class="profile_img" style="border-radius: 50px; width: 40px; height: 40px;" src="{% get_media_prefix %}{{ user.profile_image }}">
+                </div>
+                <div style="width: 35vw; height: 4vh; min-height: 40px; margin-top: 2.5vh;"> 
+                    <b style="font-size: 16pt;">{{ user.nickname }}</b>
+                    {{ user.email }}
+                </div>
+            </div>
+            <form></form>
+            {% comment %} <form action="/user/edit/{{ user.id }}/" method='POST'> {% endcomment %}
+            <form action="{% url 'users:profileupload' user.id %}" method="POST" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <div style="display: flex; flex-direction: row;">
+                    <div style="width: 150px; height:50px; float: left;">
+                        <p style="font-size: 17px; text-align: right;">프로필 사진</p>
+                      </div>
+              
+                      <div style="width: 75%; float: left;padding-left:30px">
+                        <div type="file">
+                          <input type="file" name="image" required="required" value='image'>
+                        </div>
+                      </div>
+    
+                <div style="display: flex; flex-direction: row;">
+                    <div style="width: 15vw; height: 4vh; min-height: 40px; margin: 1vh 30px 0 0; text-align: right;"></div>
+                    <div style="width: 35vw; height: 4vh; min-height: 40px; margin-top: 1vh;"><button type="submit" class="btn btn-primary">제출</button></div>
+                </div>
+                {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                     {{ error }}
+                     </div>
+                    {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+</script>
+
+
+{% endblock %}
