@@ -49,25 +49,25 @@ def signup(request):
             else:
                 User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
-        # if password == password2:
-        #     User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
-        #     return render(request, 'login.html')
-        # else:
-        #     return HttpResponse("비밀번호가 틀렸습니다.")
 
 
 def login(request):
     if request.method == 'GET':
-        return render(request, 'login.html')
+        user = request.user.is_authenticated
+        if user:
+            return redirect('/')
+        else:
+            return render(request, 'login.html')
     elif request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
+        
         user = authenticate(request, email=email , password=password)
         if user is not None:
             loginsession(request, user)
             return redirect('/')
         else:
-            return HttpResponse("로그인 실패")
+            return render(request, 'login.html', {'error':'이메일 혹은 패스워드를 확인 해 주세요!'})
 
 @login_required
 def logout(request):   #로그아웃 함수
@@ -115,13 +115,22 @@ def password(request, id): # 비밀번호 변경 페이지 접근
         if check:
             new_password = request.POST["new_password"]
             confirm_password = request.POST["confirm_password"]
-            if new_password == confirm_password:
+            
+            if new_password != confirm_password:
+                return render(request, 'profile_edit_password.html', {'error':'새 비밀번호를 확인해주세요.'})
+            elif (len(new_password) < 8):
+                return render(request, 'profile_edit_password.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
+            elif re.search('[a-zA-z]+', new_password)is None:
+                return render(request, 'profile_edit_password.html', {'error': '비밀번호는 최소 1개 이상의 영문이 포함되어야 합니다!'})
+            elif re.search('[0-9]+', new_password) is None:
+                return render(request, 'profile_edit_password.html', {'error': '비밀번호에는 최소 1개 이상의 숫자가 포함되어야 합니다!'})
+            elif re.search('[`~!@#$%^&*(),<.>/?]+', new_password) is None:
+                return render(request, 'profile_edit_password.html', {'error': '비밀번호에는 최소 1개 이상의 특수문자가 포함되어야 합니다!'})
+            else:
                 user.set_password(new_password)
                 user.save()
                 auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('/')
-            else:
-                return render(request, 'profile_edit_password.html', {'error':'새 비밀번호를 확인해주세요.'})
+                return render(request,'profile_edit_password.html' )
         else:
             return render(request, 'profile_edit_password.html', {'error':'비밀번호가 일치하지 않습니다'})
         
@@ -189,14 +198,17 @@ def kakao_social_login_callback(request):
     profile_json = profile_request.json()
     kakao_id = profile_json.get('id')
     username = profile_json['properties']['nickname']
+    profile_image = profile_json['properties']['profile_image']
 
     if User.objects.filter(kakao_id=kakao_id).exists():
         user = User.objects.get(kakao_id=kakao_id)
+        user.kakao_profile = profile_image
+        user.save()
         auth.login(request, user)  # 로그인 처리
     else:
         User.objects.create(
             username=username,
-
+            kakao_profile=profile_image,
             kakao_id=kakao_id,
         )
         user = User.objects.get(kakao_id=kakao_id)
