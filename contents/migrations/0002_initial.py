@@ -1,3 +1,4 @@
+
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
@@ -22,6 +23,11 @@ class Migration(migrations.Migration):
             model_name='comment',
             name='feed',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contents.feed'),
+        ),
+        migrations.AddField(
+            model_name='comment',
+            name='like',
+            field=models.ManyToManyField(related_name='Comment', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='comment',

@@ -33,7 +33,7 @@ class Feed(models.Model):
 class Comment(models.Model):
 
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= 'comment' )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

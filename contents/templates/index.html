@@ -52,9 +52,9 @@
 
 
     <div>
-        <form action="{% url 'contents:likes' feed.pk %}" method='POST'>
+        <form action="{% url 'contents:likes' feed_id %}" method='POST'>
           {% csrf_token %}
-          {% if user in article.like_users.all %}
+          {% if user in comment.like.all %}
             <input type="submit" value='좋아요 취소'>
           {% else %}
             <input type="submit" value='좋아요'>
