@@ -41,6 +41,16 @@
                 </li>
             </ul>
         </div>
+        <form class="d-flex" method="post" action="{% url 'contents:search' %}">
+            {% csrf_token %}
+            <select class="form-select" aria-label="Default select example" name="search_menu">
+                <option selected>선택..</option>
+                <option value="1">제목</option>
+                <option value="2">내용</option>
+                <option value="3">태그</option>
+            </select>
+            <input class="form-control" style="width: 200px" type="search" placeholder="Search" aria-label="Search" name="q">
+        </form>
         <form class="form-inline my-2 my-lg-0">
             {% if not user.is_authenticated %}
             <ul class="navbar-nav mr-auto">
@@ -61,15 +71,18 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/users/logout"> 로그아웃 </a>
                     <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                    <a class="nav-link" href="{% url 'contents:post' %}"> 글 작성 </a>
                 </li>
             </ul>
             {% endif %}
         </form>
     </div>
 </nav>
+<div style="background-color: aqua; padding: 20px 20px 20px 20px; width: 30vw; height: 100vh;">
+
 {% block content %}
 
 {% endblock %}
-
+</div>
 </body>
 </html>

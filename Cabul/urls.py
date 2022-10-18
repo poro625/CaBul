@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('contents/', include('contents.urls')),
     path('', views.home, name='home'),
 
     #로그인 요청을 보낼 url
@@ -31,3 +32,4 @@ urlpatterns = [
     path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'),
     path('contents/', include('contents.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

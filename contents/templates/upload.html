@@ -7,13 +7,13 @@
     <title>게시글 작성</title>
 </head>
 <body>
-    <form action="{% url 'contents:upload' %}" method="POST">
+    <form action="{% url 'contents:post' %}" method="POST">
     {% csrf_token %}
     <div style="display: flex; flex-direction: column;">
         <div>제목 <input type="text" name="title" placeholder="제목" /></div>
         <div>카테고리 <input type="text" name="category" placeholder="카테고리" /></div>
         <div>태그 <input type="text" name="tag" placeholder="태그, 입력, 하세요" /></div>
-        <textarea type="text" name="content" placeholder="내용 입력..." row="3"></textarea>
+        <textarea type="text" name="content" placeholder="내용 입력..." cols="30" rows="10"></textarea>
         <button type="submit">작성하기</button>
     </div>
     </form>
