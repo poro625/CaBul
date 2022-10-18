@@ -28,14 +28,14 @@ def signup(request):
 
         if password != password2:
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
-        elif (len(password) < 8 ):
-            return render(request, 'signup.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
-        # elif re.search('[a-zA-z]+', password)is None:
-        #     return render(request, 'signup.html', {'error': '비밀번호는 최소 1개 이상의 영문 대소문자가 포함되어야 합니다!'})
-        elif re.search('[0-9]+', password) is None:
-            return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 숫자가 포함되어야 합니다!'})
-        elif re.search('[`~!@#$%^&*(),<.>/?]+', password) is None:
-            return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 특수문자가 포함되어야 합니다!'})
+        # elif (len(password) < 8 ):
+        #     return render(request, 'signup.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
+        # # elif re.search('[a-zA-z]+', password)is None:
+        # #     return render(request, 'signup.html', {'error': '비밀번호는 최소 1개 이상의 영문 대소문자가 포함되어야 합니다!'})
+        # elif re.search('[0-9]+', password) is None:
+        #     return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 숫자가 포함되어야 합니다!'})
+        # elif re.search('[`~!@#$%^&*(),<.>/?]+', password) is None:
+        #     return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 특수문자가 포함되어야 합니다!'})
         else:
             if email == '' or password == '':
                 return render(request, 'signup.html', {'error': '이메일과 패스워드를 입력해주세요.'})
