@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,15 +10,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
     <title>상세 페이지</title>
 </head>
 <body>
     <div>상세 페이지</div>
-
     {{ feeds.title }}
     {{ feeds.content }}
-
+    <img class="feed2_img" style="border-radius: 50px; width: 40px; height: 40px;" src="{% get_media_prefix %}{{ feeds.image }}">
     {% if feeds.tags %}
     {% for tag in feeds.tags.all %}
     {% comment %} href="{% url 'tagged_object_list' tag.name %}"> {% endcomment %}
@@ -27,18 +26,30 @@
     </a>
     {% endfor %}
     {% comment %} href="{% url 'tag_cloud' %}">TagCloud</a> {% endcomment %}
-    {% endif %}
+    {% endif %}<br>
+
+    {% for comment in comments %}
+    {{ comment.user.nickname }}
+    {{ comment.comment }}<br>
+    {% endfor %}
+
     
-    <form  action="{url 'contents:write_comment'}" method="POST">
+    <form  action="comment/{{ feeds.id }}" method="POST">
         {% csrf_token %}
         <div>
             <div>
-                <label for="content">댓글</label>
-                <input id="content" type="text" name="content" > 
+                <label for="comment">댓글</label>
+                <input id="comment" type="text" name="comment" > 
             </div>            
             <input type="submit">                                    
         </div>
     </form>
+
+    {% if feeds.user == request.user %}
+    <button><a href="{% url 'contents:post_delete' feeds.id %}">delete</a></button>
+    <button><a href="{% url 'contents:post_update' feeds.id %}">Edit</a></button>
+    {% endif %}
+
 
     <div>
         <form action="{% url 'contents:likes' feed_id %}" method='POST'>
@@ -50,6 +61,7 @@
           {% endif %}
         </form>
       </div>
+
 
 </body>
 

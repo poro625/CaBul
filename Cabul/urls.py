@@ -32,3 +32,4 @@ urlpatterns = [
     path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'),
     path('contents/', include('contents.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

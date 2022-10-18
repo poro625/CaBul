@@ -1,8 +1,10 @@
+from email import contentmanager
 from django.db import models
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 from django.conf import settings
 from users.models import User
+from django.db import models
 
 # Create your models h
 # 
@@ -14,11 +16,12 @@ class TaggedFeed(TaggedItemBase):
 class Feed(models.Model):
     title = models.CharField(max_length=30)
     content = models.TextField()    # 글내용
-    image = models.ImageField()  # 피드 이미지
+    image = models.ImageField(default="", upload_to="feed_images/")  # 피드 이미지
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=30)
+    
     
     
     ### 태그 추가 부분###
@@ -34,4 +37,6 @@ class Comment(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='Comment')
+
