@@ -44,7 +44,10 @@
             <input type="submit">                                    
         </div>
     </form>
-
+    {% if feeds.user == request.user %}
+    <button><a href="{% url 'contents:post_delete' feeds.id %}">delete</a></button>
+    <button><a href="{% url 'contents:post_update' feeds.id %}">Edit</a></button>
+    {% endif %}
 </body>
 
 </html>
