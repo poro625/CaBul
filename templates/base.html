@@ -71,6 +71,7 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/users/logout"> 로그아웃 </a>
                     <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                    <a class="nav-link" href="{% url 'contents:post' %}"> 글 작성 </a>
                 </li>
             </ul>
             {% endif %}
