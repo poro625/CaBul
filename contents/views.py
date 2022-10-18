@@ -16,7 +16,7 @@ def post(request):
         my_feed.content =request.POST.get("content")
         my_feed.user =request.user
         my_feed.like = 0
-        my_feed.image = "https://www.queen.co.kr/news/photo/202207/378900_121787_469.jpg"
+        my_feed.image = request.FILES['feed_image']
         my_feed.category = request.POST.get('category', '')
         my_feed.save()
         tags = request.POST.get('tag', '').split(',')
