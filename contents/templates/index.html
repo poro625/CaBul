@@ -7,9 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    
 
 
-    
+    <form  action="{url 'contents:write_comment'}" method="POST">
+        {% csrf_token %}
+        <div>
+            <div>
+                <label for="content">댓글</label>
+                <input id="content" type="text" name="content" > 
+            </div>            
+            <input type="submit">                                    
+        </div>
+    </form>
+
+
+
 </body>
 </html>
