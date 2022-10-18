@@ -8,16 +8,12 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
-import re
-import requests
-import random
-import string
-
 
 # Create your views here.
 def signup(request):
     if request.method == 'GET':
         return render(request, 'signup.html')
+        
     elif request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -28,6 +24,7 @@ def signup(request):
 
         if password != password2:
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
+
         elif (len(password) < 8 ):
             return render(request, 'signup.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
         elif re.search('[a-zA-z]+', password)is None:
@@ -108,6 +105,7 @@ def profileupload(request, id):
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
         return render(request, 'profile_edit_password.html')
+
     elif request.method == 'POST':
         user = User.objects.get(id=id)
         origin_password = request.POST["origin_password"]
