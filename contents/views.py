@@ -1,9 +1,3 @@
-from multiprocessing import context
-from os import posix_spawn
-import re
-from turtle import title
-from django.forms import FileField
-from django.http import HttpResponse
 from contents.models import Feed, Comment
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -11,69 +5,19 @@ from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
 
-
-def index(request):
-    feeds= Feed.objects.all().order_by("-created_at")
-    context = {
-        "feeds":feeds
-    }
-
-    return render(request,"index.html", context)
-
+@login_required
 def post(request):
     if request.method =="GET":
-        return render(request, "post.html")
+        return render(request, "upload.html")
+
     elif request.method == "POST":
-        title =request.POST.get("title")
-        content =request.POST.get("content")
-        user =request.user
-        Feed.objects.create(title=title, content=content, user =user)
-        return redirect("contents:index")
-        
-    
-def post_detail(request, feed_id):
-    post = get_object_or_404(Feed,id=feed_id)
-    context = {
-        "post":post
-    }
-    return render(request, "post_detail.html", context)
-
-def post_delete(request, feed_id):
-    post =Feed.objects.get(id=feed_id)
-    post.delete()
-    return redirect('/contents')
-    
-    
-def post_edit(request, feed_id):
-    post = Feed.objects.get(id=feed_id)
-    context = {
-        'post': post,
-    }
-    return render(request, 'edit.html', context)
-
-
-def post_update(request, feed_id):
-    post = Feed.objects.get(id=feed_id)
-    post.title = request.POST.get('title')
-    post.content = request.POST.get('content')
-    post.save()
-    
-    return redirect ('contents:post_detail', post.id)
-
-@login_required
-def Upload(request):
-    if request.method == 'GET':  # 요청하는 방식이 GET 방식인지 확인하기
-        return render(request, 'upload.html')
-
-    if request.method == 'POST':
-        user = request.user
-        my_feed = Feed()  # 글쓰기 모델 가져오기
-        my_feed.user = user
-        my_feed.title = request.POST.get('title', '')  # 모델에 글 저장
-        my_feed.content = request.POST.get('content', '')  # 모델에 글 저장
+        my_feed = Feed()
+        my_feed.title =request.POST.get("title")
+        my_feed.content =request.POST.get("content")
+        my_feed.user =request.user
         my_feed.like = 0
-        my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
-        my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
+        my_feed.image = "https://www.queen.co.kr/news/photo/202207/378900_121787_469.jpg"
+        my_feed.category = request.POST.get('category', '')
         my_feed.save()
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
@@ -82,11 +26,71 @@ def Upload(request):
                 my_feed.tags.add(tag)
         return redirect('/')
 
-
-def FeedDetail(request, id):
+        
+    
+def post_detail(request, id):
     my_feed = Feed.objects.get(id=id)
     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
-    return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
+    context = {
+        'feeds':my_feed,
+        'comments': comment
+    }
+    return render(request, 'index.html', context)
+
+def post_delete(request, id):
+    post = Feed.objects.get(id=id)
+    post.delete()
+    return redirect('/')
+    
+    
+def post_edit(request, id):
+    post = Feed.objects.get(id=id)
+    context = {
+        'post': post,
+    }
+    return render(request, 'update.html', context)
+
+
+def post_update(request, id):
+    if request.method == "GET":
+        post = Feed.objects.get(id=id)
+        return render(request, 'update.html', {"post":post})
+
+    if request.method == "POST":
+        post = Feed.objects.get(id=id)
+        post.title = request.POST.get('title', '')
+        post.content = request.POST.get('content', '')
+        post.save()
+        
+        return redirect('contents:post_detail', post.id)
+
+# @login_required
+# def Upload(request):
+#     if request.method == 'GET':  # 요청하는 방식이 GET 방식인지 확인하기
+#         return render(request, 'upload.html')
+
+#     if request.method == 'POST':
+#         user = request.user
+#         my_feed = Feed()  # 글쓰기 모델 가져오기
+#         my_feed.user = user
+#         my_feed.title = request.POST.get('title', '')  # 모델에 글 저장
+#         my_feed.content = request.POST.get('content', '')  # 모델에 글 저장
+#         my_feed.like = 0
+#         my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
+#         my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
+#         my_feed.save()
+#         tags = request.POST.get('tag', '').split(',')
+#         for tag in tags:
+#             tag = tag.strip()
+#             if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
+#                 my_feed.tags.add(tag)
+#         return redirect('/')
+
+
+# def FeedDetail(request, id):
+#     my_feed = Feed.objects.get(id=id)
+#     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
+#     return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
 
 
 class TagCloudTV(TemplateView):
