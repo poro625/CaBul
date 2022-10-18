@@ -13,11 +13,11 @@ import requests
 import random
 import string
 
-
 # Create your views here.
 def signup(request):
     if request.method == 'GET':
         return render(request, 'signup.html')
+        
     elif request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -99,6 +99,7 @@ def profileupload(request, id):
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
         return render(request, 'profile_edit_password.html')
+
     elif request.method == 'POST':
         user = User.objects.get(id=id)
         origin_password = request.POST["origin_password"]
@@ -193,4 +194,5 @@ def kakao_social_login_callback(request):
         user = User.objects.get(kakao_id=kakao_id)
         auth.login(request, user)
     return redirect('/')
+
 
