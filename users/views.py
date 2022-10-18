@@ -13,6 +13,7 @@ import re
 import requests
 import random
 import string
+
 # SMTP 관련 인증
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -59,7 +60,6 @@ def signup(request):
             elif exist_nickname:
                 return render(request, 'signup.html', {'error': '이미 존재하는 닉네임입니다.'})
             else:
-
                 user= User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
                 user.is_active = False # 유저 비활성화
                 user.save()
@@ -78,6 +78,21 @@ def signup(request):
 
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
 
+# 계정 활성화 함수(토큰을 통해 인증)
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExsit):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        auth.login(request, user)
+        return redirect("/")
+    else:
+        return render(request, 'home.html', {'error' : '계정 활성화 오류'})
+    return 
 
 def login(request):
     if request.method == 'GET':
@@ -108,21 +123,6 @@ def delete(request):   #회원탈퇴
         request.user.delete()
     return render(request, 'signup.html')
 
-# 계정 활성화 함수(토큰을 통해 인증)
-def activate(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExsit):
-        user = None
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        auth.login(request, user)
-        return redirect("/")
-    else:
-        return render(request, 'home.html', {'error' : '계정 활성화 오류'})
-    return 
 
 def update(request, id):
     if request.method == 'GET':# 프로필 수정 페이지 접근

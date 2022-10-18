@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b!q_xr4_yn+ypuuyt+x$b52@4da@a(%cz@grewzpwt06&pvc=r'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,9 +139,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-EMAIL_HOST = 'smtp.naver.com' 		 # 메일 호스트 서버
-EMAIL_PORT = '587' 			 # 서버 포트
-EMAIL_HOST_USER = 'shdntjr96@naver.com' 	 # 우리가 사용할 Gmail
-EMAIL_HOST_PASSWORD = 'SKTT1FAKER'		 # 우리가 사용할 Gmail p
+EMAIL_HOST = 'smtp.naver.com' 
+EMAIL_PORT = '587'		 
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True			 # TLS 보안 설정
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER	 # 응답 메일 관련 설정
