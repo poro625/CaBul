@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,10 +14,9 @@
 </head>
 <body>
     <div>상세 페이지</div>
-
     {{ feeds.title }}
     {{ feeds.content }}
-
+    <img class="feed2_img" style="border-radius: 50px; width: 40px; height: 40px;" src="{% get_media_prefix %}{{ feeds.image }}">
     {% if feeds.tags %}
     {% for tag in feeds.tags.all %}
     {% comment %} href="{% url 'tagged_object_list' tag.name %}"> {% endcomment %}
