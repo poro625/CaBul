@@ -8,10 +8,6 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
-import re
-import requests
-import random
-import string
 
 
 # Create your views here.

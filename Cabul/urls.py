@@ -28,4 +28,8 @@ urlpatterns = [
     path('account/login/kakao/', kakao_social_login, name='kakao_login'),
     #받은 인가 코드로 접근 토근을 받아 유저의 정보를 가져올 url
     path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'),
+    path('contents/', include('contents.urls')),
+
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

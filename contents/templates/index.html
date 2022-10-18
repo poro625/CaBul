@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>모든 게시물들</h1>
+    <button><a href= {% url 'contents:post' %}>게시물작성</a></button>
+    {% for feed in feeds %}
+    
+    <div>
+        <h3>{{ feed.title }}</h3>
+        <a href={% url 'contents:post_detail' feed.id %}>상세페이지\</a>
+
+
+    </div>
+
+    {% endfor %}
+</body>
+</html>
