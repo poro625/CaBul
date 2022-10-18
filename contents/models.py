@@ -14,7 +14,7 @@ class TaggedFeed(TaggedItemBase):
 class Feed(models.Model):
     title = models.CharField(max_length=30)
     content = models.TextField()    # 글내용
-    image = models.ImageField()  # 피드 이미지
+    image = models.ImageField(default="", upload_to="feed_images/")  # 피드 이미지
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
