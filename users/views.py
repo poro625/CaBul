@@ -49,11 +49,6 @@ def signup(request):
             else:
                 User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
-        # if password == password2:
-        #     User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
-        #     return render(request, 'login.html')
-        # else:
-        #     return HttpResponse("비밀번호가 틀렸습니다.")
 
 
 def login(request):
@@ -189,14 +184,18 @@ def kakao_social_login_callback(request):
     profile_json = profile_request.json()
     kakao_id = profile_json.get('id')
     username = profile_json['properties']['nickname']
+    profile_image = profile_json['properties']['profile_image']
+    print(request, profile_image)
 
     if User.objects.filter(kakao_id=kakao_id).exists():
         user = User.objects.get(kakao_id=kakao_id)
+        user.kakao_profile = profile_image
+        user.save()
         auth.login(request, user)  # 로그인 처리
     else:
         User.objects.create(
             username=username,
-
+            kakao_profile=profile_image,
             kakao_id=kakao_id,
         )
         user = User.objects.get(kakao_id=kakao_id)
