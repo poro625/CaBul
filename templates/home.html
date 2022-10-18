@@ -12,17 +12,25 @@
     <title>홈화면</title>
 </head>
 <body>
-    <div style="display: flex; flex-direction: row; width: 60vw; height: 50px; margin: 20px auto 0 30vw; text-align: center;">
+    <div style="display: flex; flex-direction: row; width: 60vw; height: 50px; margin: 20px auto 0 auto; text-align: center;">
     {% for feed in feeds %}
-    <div style="width: 18vw; height: 30vh; margin: 10px 10px 10px 10px; border: solid 1px black;">
+    <div style="width: 300px; min-width: 300px; height: 400px; min-height: 400px; margin: 10px 10px 10px 10px; border: solid 1px black;">
         <div>프로필 정보</div>
-        <div style="width: 18vw; height: 20vh; background-color: black;"><img style="width: 18vw; height: 20vh; background-size: cover;" src="{{feed.image }}" alt=""/></div>
+        <div style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; background-color: black;">
+            <img style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; background-size: cover;" src="{{ feed.image }}" alt=""/></div>
         <div>제목 : {{ feed.title }}</div>
         <div>카테고리 : {{ feed.category }}</div>
         <button onclick="location.href='/contents/detail/{{ feed.id }}'">상세 보기</button>
     </div>
     {% endfor %}
     </div>
+
+    <!-- <div style="display: flex; flex-direction: column; width: 60vw; max-width: 1500px; height: 1000px; background-color: antiquewhite; margin: 30px 0 0 30px;">
+        <div style="width: 60vw; max-width: 1500px; height: 50px; background-color: rgb(10, 10, 9);"></div>
+        <div style="width: 60vw; max-width: 1500px; height: 1000px; background-color: black; margin-top: 30px;"></div>
+    </div> -->
+
+
 
 </body>
 </html>
