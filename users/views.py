@@ -24,12 +24,22 @@ def signup(request):
         nickname = request.POST.get('nickname')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
+        profile_image = 'default.png'
+
         if password != password2:
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
+        elif (len(password) < 8 ):
+            return render(request, 'signup.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
+        # elif re.search('[a-zA-z]+', password)is None:
+        #     return render(request, 'signup.html', {'error': '비밀번호는 최소 1개 이상의 영문 대소문자가 포함되어야 합니다!'})
+        elif re.search('[0-9]+', password) is None:
+            return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 숫자가 포함되어야 합니다!'})
+        elif re.search('[`~!@#$%^&*(),<.>/?]+', password) is None:
+            return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 특수문자가 포함되어야 합니다!'})
         else:
             if email == '' or password == '':
                 return render(request, 'signup.html', {'error': '이메일과 패스워드를 입력해주세요.'})
-            
+
             exist_email = get_user_model().objects.filter(email=email)
             exist_nickname = get_user_model().objects.filter(nickname=nickname)
             if exist_email:
@@ -37,7 +47,7 @@ def signup(request):
             elif exist_nickname:
                 return render(request, 'signup.html', {'error': '이미 존재하는 닉네임입니다.'})
             else:
-                User.objects.create_user(email=email, username=username, password=password, nickname=nickname)
+                User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
         # if password == password2:
         #     User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
@@ -83,7 +93,17 @@ def update(request, id):
             return render(request, 'profile_edit.html', {'error': '이미 존재하는 닉네임입니다.'})
         else:
             user.save()
-        return redirect("/")
+        return render(request, 'profile_edit.html')
+    
+def profileupload(request, id):
+    if request.method == 'GET':
+        return render(request, 'profileupload.html')
+    elif request.method =='POST':
+        user = User.objects.get(id=id)
+        user.profile_image = request.FILES['image']
+        
+        user.save()
+        return render(request, 'profileupload.html')
 
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
@@ -183,11 +203,4 @@ def kakao_social_login_callback(request):
         user = User.objects.get(kakao_id=kakao_id)
         auth.login(request, user)
     return redirect('/')
-
-
-def get_profile(request, nickname):
-    print(request)
-    print(dir(request.user))
-    context = {}
-    return render(request, 'user/profile.html', context)
 
