@@ -93,15 +93,16 @@ def delete_comment(request, id ): # 댓글 삭제
 
 
 
-def likes(request, id):
-    if request.user.is_authenticated:
-        comment = get_object_or_404(Comment, pk=id)
+def likes(request, id):     # 좋아요
 
-        if comment.like.filter(pk=request.user.id).exists():
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, id=id)
+
+        if comment.like.filter(id=request.user.id).exists():
             comment.like.remove(request.user)
         else:
             comment.like.add(request.user)
 
-            return redirect('contents:index') #
+            return redirect('contents:index')
             
     return redirect('users:login')
