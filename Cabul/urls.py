@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('contents/', include('contents.urls')),
     path('', views.home, name='home'),
 
     #로그인 요청을 보낼 url

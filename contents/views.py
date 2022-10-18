@@ -1,5 +1,7 @@
+
 from django.shortcuts import render, redirect
-from contents.models import Feed
+from django.http import HttpResponse
+from .models import Feed , Comment
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
@@ -57,5 +59,33 @@ def search(request):
     query = Q(content__icontains=q) | Q(tags__name__icontains=q) | Q(title__icontains=q)
     searched = Feed.objects.filter(query)
     return render(request, 'search.html',{'searched':searched, 'q': q })
+    
+def detail_comment(request, id ): # 댓글 읽기
+    my_feed = Feed.objects.get(id=id)
+    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
+
+    return render(request,'index.html', my_feed=my_feed, comment=comment )
 
 
+
+def write_comment(request, id ): # 댓글 쓰기
+    if request.method == 'POST':
+        current_comment = Feed.objects.get(id=id)
+        comment = request.POST.get('comment')
+
+        TC = Comment()
+        TC.comment = comment
+        TC.author = request.user
+        TC.tweet = current_comment
+        TC.save()
+
+    return redirect('/')
+
+
+
+def delete_comment(request, id ): # 댓글 삭제
+    
+    feed = Feed.objects.get(id=id)
+    comment = request.POST.get('comment')
+    feed.delete()
+    return redirect('/')
