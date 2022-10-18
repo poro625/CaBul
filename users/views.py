@@ -12,6 +12,13 @@ import re
 import requests
 import random
 import string
+# SMTP 관련 인증
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, force_str
+from .tokens import account_activation_token
 
 # Create your views here.
 def signup(request):
@@ -30,8 +37,8 @@ def signup(request):
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
         elif (len(password) < 8 ):
             return render(request, 'signup.html', {'error': '패스워드는 8자 이상이어야 합니다!'})
-        # elif re.search('[a-zA-z]+', password)is None:
-        #     return render(request, 'signup.html', {'error': '비밀번호는 최소 1개 이상의 영문 대소문자가 포함되어야 합니다!'})
+        elif re.search('[a-zA-z]+', password)is None:
+            return render(request, 'signup.html', {'error': '비밀번호는 최소 1개 이상의 영문 대소문자가 포함되어야 합니다!'})
         elif re.search('[0-9]+', password) is None:
             return render(request, 'signup.html', {'error': '비밀번호에는 최소 1개 이상의 숫자가 포함되어야 합니다!'})
         elif re.search('[`~!@#$%^&*(),<.>/?]+', password) is None:
@@ -47,7 +54,21 @@ def signup(request):
             elif exist_nickname:
                 return render(request, 'signup.html', {'error': '이미 존재하는 닉네임입니다.'})
             else:
-                User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
+                user= User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
+                user.is_active = False # 유저 비활성화
+                user.save()
+                current_site = get_current_site(request)
+                message = render_to_string('activation_email.html', {
+                    'user':user,
+                    'domain':current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+
+                })
+                mail_title = "계정 활성화 확인 이메일"
+                mail_to = request.POST["email"]
+                email = EmailMessage(mail_title, message, to=[mail_to])
+                email.send()
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
         # if password == password2:
         #     User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
@@ -79,6 +100,22 @@ def delete(request):   #회원탈퇴
     if request.user.is_authenticated:
         request.user.delete()
     return render(request, 'signup.html')
+
+# 계정 활성화 함수(토큰을 통해 인증)
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExsit):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        auth.login(request, user)
+        return redirect("/")
+    else:
+        return render(request, 'home.html', {'error' : '계정 활성화 오류'})
+    return 
 
 def update(request, id):
     if request.method == 'GET':# 프로필 수정 페이지 접근
