@@ -4,15 +4,14 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
     <title>상세 페이지</title>
 </head>
-
 <body>
     <div>상세 페이지</div>
 
@@ -29,8 +28,20 @@
     {% endfor %}
     {% comment %} href="{% url 'tag_cloud' %}">TagCloud</a> {% endcomment %}
     {% endif %}
+    
+    <form  action="{url 'contents:write_comment'}" method="POST">
+        {% csrf_token %}
+        <div>
+            <div>
+                <label for="content">댓글</label>
+                <input id="content" type="text" name="content" > 
+            </div>            
+            <input type="submit">                                    
+        </div>
+    </form>
 
 </body>
 
 </html>
 {% endblock %}
+
