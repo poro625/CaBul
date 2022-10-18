@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,8 +17,9 @@
     {% for feed in feeds %}
     <div style="width: 300px; min-width: 300px; height: 400px; min-height: 400px; margin: 10px 10px 10px 10px; border: solid 1px black;">
         <div>프로필 정보</div>
-        <div style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; background-color: black;">
-            <img style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; background-size: cover;" src="{{ feed.image }}" alt=""/></div>
+        <div style="width: 18vw; height: 20vh; background-color: black;">
+            <img class="feed_img" style="border-radius: 50px; width: 40px; height: 40px;" src="{% get_media_prefix %}{{ feed.image }}"></div>
+
         <div>제목 : {{ feed.title }}</div>
         <div>카테고리 : {{ feed.category }}</div>
         <button onclick="location.href='/contents/detail/{{ feed.id }}'">상세 보기</button>
