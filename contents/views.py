@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from contents.models import Feed
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
+from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 
@@ -28,6 +30,11 @@ def Upload(request):
         return redirect('/')
 
 
+def FeedDetail(request, id):
+    my_feed = Feed.objects.get(id=id)
+    return render(request, 'index.html', {'feeds':my_feed})
+
+
 class TagCloudTV(TemplateView):
     template_name = 'taggit/tag_cloud_view.html'
 
@@ -43,3 +50,12 @@ class TaggedObjectLV(ListView):
         context = super().get_context_data(**kwargs)
         context['tagname'] = self.kwargs['tag']
         return context
+
+
+def search(request):
+    q = request.POST.get('q', "")  # I am assuming space separator in URL like "random stuff"
+    query = Q(content__icontains=q) | Q(tags__name__icontains=q) | Q(title__icontains=q)
+    searched = Feed.objects.filter(query)
+    return render(request, 'search.html',{'searched':searched, 'q': q })
+
+

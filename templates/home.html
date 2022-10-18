@@ -13,7 +13,15 @@
 </head>
 <body>
     <div>홈 페이지 입니다.</div>
-    
+
+    {% for feed in feeds %}
+    <div style="border: solid 1px black;">
+        <div>제목 : {{ feed.title }}</div>
+        <div>카테고리 : {{ feed.category }}</div>
+        <button onclick="location.href='/contents/detail/{{ feed.id }}'">상세 보기</button>
+    </div>
+    {% endfor %}
+
 </body>
 </html>
 {% endblock %}
