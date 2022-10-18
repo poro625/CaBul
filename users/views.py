@@ -13,6 +13,7 @@ import re
 import requests
 import random
 import string
+
 # SMTP 관련 인증
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
