@@ -1,8 +1,10 @@
+from email import contentmanager
 from django.db import models
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 from django.conf import settings
 from users.models import User
+from django.db import models
 
 # Create your models h
 # 
@@ -21,6 +23,7 @@ class Feed(models.Model):
     category = models.CharField(max_length=30)
     
     
+    
     ### 태그 추가 부분###
     tags = TaggableManager(through=TaggedFeed, blank=True)
 
@@ -34,3 +37,6 @@ class Comment(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    
+
