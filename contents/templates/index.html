@@ -27,14 +27,20 @@
     </a>
     {% endfor %}
     {% comment %} href="{% url 'tag_cloud' %}">TagCloud</a> {% endcomment %}
-    {% endif %}
+    {% endif %}<br>
+
+    {% for comment in comments %}
+    {{ comment.user.nickname }}
+    {{ comment.comment }}<br>
+    {% endfor %}
+
     
-    <form  action="{url 'contents:write_comment'}" method="POST">
+    <form  action="comment/{{ feeds.id }}" method="POST">
         {% csrf_token %}
         <div>
             <div>
-                <label for="content">댓글</label>
-                <input id="content" type="text" name="content" > 
+                <label for="comment">댓글</label>
+                <input id="comment" type="text" name="comment" > 
             </div>            
             <input type="submit">                                    
         </div>

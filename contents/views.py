@@ -33,7 +33,8 @@ def Upload(request):
 
 def FeedDetail(request, id):
     my_feed = Feed.objects.get(id=id)
-    return render(request, 'index.html', {'feeds':my_feed})
+    comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
+    return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
 
 
 class TagCloudTV(TemplateView):
@@ -71,25 +72,26 @@ def search(request):
 
 
     return render(request, 'search.html',{'searched':searched, 'q': q })
-    
-def detail_comment(request, id ): # 댓글 읽기
-    my_feed = Feed.objects.get(id=id)
-    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
-
-    return render(request,'index.html', my_feed=my_feed, comment=comment )
 
 
+# def detail_comment(request, id ): # 댓글 읽기
+#     my_feed = Feed.objects.get(id=id)
+#     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
 
-def write_comment(request, id ): # 댓글 쓰기
+#     return render(request,'index.html', my_feed=my_feed, comment=comment )
+
+
+
+def write_comment(request, id): # 댓글 쓰기
     if request.method == 'POST':
         current_comment = Feed.objects.get(id=id)
         comment = request.POST.get('comment')
 
-        TC = Comment()
-        TC.comment = comment
-        TC.author = request.user
-        TC.tweet = current_comment
-        TC.save()
+        FC = Comment()
+        FC.comment = comment
+        FC.user = request.user
+        FC.feed = current_comment
+        FC.save()
 
     return redirect('/')
 
