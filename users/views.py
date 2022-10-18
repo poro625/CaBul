@@ -24,6 +24,7 @@ def signup(request):
         nickname = request.POST.get('nickname')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
+        profile_image = 'default.png'
         if password != password2:
             return render(request, 'signup.html', {'error': '패스워드를 확인 해 주세요!'})
         else:
@@ -37,7 +38,7 @@ def signup(request):
             elif exist_nickname:
                 return render(request, 'signup.html', {'error': '이미 존재하는 닉네임입니다.'})
             else:
-                User.objects.create_user(email=email, username=username, password=password, nickname=nickname)
+                User.objects.create_user(email=email, username=username, password=password, nickname=nickname, profile_image=profile_image)
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
         # if password == password2:
         #     User.objects.create_user(email=email, username=username, nickname=nickname, password=password)
@@ -77,13 +78,15 @@ def update(request, id):
         user = User.objects.get(id=id)
         user.username = request.POST.get('username')
         user.nickname = request.POST.get('nickname')
+        print(request.FILES)
+        user.profile_image = request.FILES['image']
         
         exist_nickname = get_user_model().objects.filter(nickname=user.nickname)
         if exist_nickname:
             return render(request, 'profile_edit.html', {'error': '이미 존재하는 닉네임입니다.'})
         else:
             user.save()
-        return redirect("/")
+        return render(request, 'profile_edit.html')
 
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
