@@ -104,6 +104,24 @@ def password(request, id): # 비밀번호 변경 페이지 접근
                 return render(request, 'profile_edit_password.html', {'error':'새 비밀번호를 확인해주세요.'})
         else:
             return render(request, 'profile_edit_password.html', {'error':'비밀번호가 일치하지 않습니다'})
+        
+@login_required
+def user_view(request):
+    if request.method == 'GET':
+        # 사용자를 불러오기, exclude와 request.user.username 를 사용해서 '로그인 한 사용자'를 제외하기
+        user_list = User.objects.all().exclude(username=request.user.username)
+        return render(request, 'follow.html', {'user_list': user_list})
+
+
+@login_required
+def user_follow(request, id):
+    me = request.user
+    click_user = User.objects.get(id=id)
+    if me in click_user.followee.all():
+        click_user.followee.remove(request.user)
+    else:
+        click_user.followee.add(request.user)
+    return redirect('users:user-list')      
 
 
 def kakao_social_login(request):
