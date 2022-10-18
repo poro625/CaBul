@@ -14,21 +14,53 @@
 </head>
 
 <body>
-    <div>검색 페이지 입니다.</div>
+    <!-- <div>검색 페이지 입니다.</div>
 
     {% if searched %} {% comment %}만약, 검색창에 입력한 값이 있다면 이라는 의미입니다. {% endcomment %}
-    <h1> 검색하신 {{ searched }} 정보입니다. </h1>
+    <h1> 검색하신 {{ q }} 정보입니다. </h1>
 
     {% for search in searched %}
-    {{ search.user_id }} <br>
-    {{ search.content }}
+
+    <div style="display: flex; flex-direction: row; margin-left: 5px;">
+        <div style="padding: 3px; border: solid 1px black;">글번호 : {{ search.id }} </div>
+        <div style="padding: 3px; border: solid 1px black;">카테고리 : {{ search.category }}</div>
+        <div style="padding: 3px; border: solid 1px black;">제목 : {{ search.title }}</div>
+        <div style="padding: 3px; border: solid 1px black;">닉네임 : {{ search.user.nickname }}</div>
+        <div style="padding: 3px; border: solid 1px black;">작성시간 : {{ search.created_at }}</div>
+    </div>
+    
 
 
 
     {% endfor %}
     {% else %} {% comment %} 검색창에 아무것도 입력하지 않았을 경우 뜨는 메시지입니다. {% endcomment %}
     <h1> 찾고 있는 이름을 검색창에 입력해주세요. </h1>
+    {% endif %} -->
+
+    {% if searched %} {% comment %}만약, 검색창에 입력한 값이 있다면 이라는 의미입니다. {% endcomment %}
+    <h1 style="display: flex; flex-direction: row; width: 60vw; height: 50px; margin: 20px auto 0 30vw; text-align: center;"> 검색하신 {{ q }} 정보입니다. </h1>
+
+    <div style="display: flex; flex-direction: row; width: 60vw; height: 50px; background-color: #c8c4c4; margin: 20px auto 0 30vw; text-align: center;">
+        <div style="width: 5vw; min-width: 50px; margin: auto;"><b>글번호</b></div>
+        <div style="width: 5vw; min-width: 50px; margin: auto;"><b>카테고리</b></div>
+        <div style="width: 25vw; min-width: 250px; margin: auto;"><b>제목</b></div>
+        <div style="width: 10vw; min-width: 100px; margin: auto;"><b>닉네임</b></div>
+        <div style="width: 15vw; min-width: 150px; margin: auto;"><b>작성시간</b></div>
+    </div>
+    {% for search in searched %}
+    <div style="display: flex; flex-direction: row; width: 60vw; height: 50px; background-color: #fafafa; margin: 0 auto 0 30vw; text-align: center; border-bottom: solid 1px #c8c4c4;">
+        <div style="width: 5vw; min-width: 50px; margin: auto;">{{ search.id }}</div>
+        <div style="width: 5vw; min-width: 50px; margin: auto;">{{ search.category }}</div>
+        <div style="width: 25vw; min-width: 250px; margin: auto; text-align: left;"><a href="/contents/detail/{{ search.id }}">{{ search.title }}</a></div>
+        <div style="width: 10vw; min-width: 100px; margin: auto;">{{ search.user.nickname }}</div>
+        <div style="width: 15vw; min-width: 150px; margin: auto;">{{ search.created_at }}</div>
+    </div>
+
+    {% endfor %}
+    {% else %} {% comment %} 검색창에 아무것도 입력하지 않았을 경우 뜨는 메시지입니다. {% endcomment %}
+    <h1> 찾고 있는 이름을 검색창에 입력해주세요. </h1>
     {% endif %}
+
 
 </body>
 

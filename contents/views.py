@@ -54,8 +54,20 @@ class TaggedObjectLV(ListView):
 
 def search(request):
     q = request.POST.get('q', "")  # I am assuming space separator in URL like "random stuff"
-    query = Q(content__icontains=q) | Q(tags__name__icontains=q) | Q(title__icontains=q)
-    searched = Feed.objects.filter(query)
-    return render(request, 'search.html',{'searched':searched, 'q': q })
+    search_menu = request.POST.get('search_menu', "")
+    print(search_menu)
+    if search_menu == '1':
+        query = Q(title__icontains=q)
+        searched = Feed.objects.filter(query)
 
+    elif search_menu == '2':
+        query = Q(content__icontains=q)
+        searched = Feed.objects.filter(query)
+
+    elif search_menu == '3':
+        query = Q(tags__name__icontains=q)
+        searched = Feed.objects.filter(query)
+
+
+    return render(request, 'search.html',{'searched':searched, 'q': q })
 
