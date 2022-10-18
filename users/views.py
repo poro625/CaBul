@@ -78,8 +78,6 @@ def update(request, id):
         user = User.objects.get(id=id)
         user.username = request.POST.get('username')
         user.nickname = request.POST.get('nickname')
-        print(request.FILES)
-        user.profile_image = request.FILES['image']
         
         exist_nickname = get_user_model().objects.filter(nickname=user.nickname)
         if exist_nickname:
@@ -87,6 +85,16 @@ def update(request, id):
         else:
             user.save()
         return render(request, 'profile_edit.html')
+    
+def profileupload(request, id):
+    if request.method == 'GET':
+        return render(request, 'profileupload.html')
+    elif request.method =='POST':
+        user = User.objects.get(id=id)
+        user.profile_image = request.FILES['image']
+        
+        user.save()
+        return render(request, 'profileupload.html')
 
 def password(request, id): # 비밀번호 변경 페이지 접근
     if request.method == 'GET':# 프로필 수정 페이지 접근
@@ -186,9 +194,3 @@ def kakao_social_login_callback(request):
         auth.login(request, user)
     return redirect('/')
 
-
-def get_profile(request, nickname):
-    print(request)
-    print(dir(request.user))
-    context = {}
-    return render(request, 'user/profile.html', context)
