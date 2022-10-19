@@ -29,6 +29,19 @@
         .timeline-container {
             margin-top : 25px
         }
+
+        .category {
+            width: 400px;
+            height: 50px;
+            text-align: right;
+            padding: 10px 40px;
+            font-weight: bold;
+            cursor: pointer;
+
+        }
+        .category:hover {
+            background-color: #aaaaaa;
+        }
     </style>
 </head>
 <body>
@@ -49,8 +62,9 @@
                 <option value="1">제목</option>
                 <option value="2">내용</option>
                 <option value="3">태그</option>
+                <option value="4">카테고리</option>
             </select>
-            <input class="form-control" style="width: 200px" type="search" placeholder="Search" aria-label="Search" name="q">
+            <input class="form-control" style="width: 200px; margin-left: 10px;" type="search" placeholder="Search" aria-label="Search" name="q">
         </form>
         <form class="form-inline my-2 my-lg-0">
             {% if not user.is_authenticated %}
@@ -70,9 +84,9 @@
                     </span>
                 </li>
                 <li class="nav-item active" style="display: flex; flex-direction: row;">
-                    <a class="nav-link" href="/users/logout"> 로그아웃 </a>
-                    <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
                     <a class="nav-link" href="{% url 'contents:post' %}"> 글 작성 </a>
+                    <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                    <a class="nav-link" href="/users/logout"> 로그아웃 </a>
                 </li>
             </ul>
             {% endif %}
@@ -80,7 +94,7 @@
     </div>
 </nav>
 <div style="display: flex; flex-direction: row;">
-    <div style="background-color: white; width: 400px; height: 100vh;">
+    <div style="background-color: white; width: 400px; height: 200vh;">
         {% if user.kakao_profile %}
         <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
             <div style="display: flex; flex-direction: row;">
@@ -130,10 +144,11 @@
         {% endif %}
         <div style="display: flex; flex-direction: column; width: 400px; height: 100%; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
 
+            <div class="category" onclick="location.href='/'"> 분류 전체보기 <b style="font-weight: normal; color: #cacaca;">({{ feed_count_all }})</b></div>
             {% for category in categorys %} 
-        <div>
-            카테고리:<a href='/category/{{ category }}'>  {{ category }} </a>
-        </div>
+            <div>
+                <div class="category"><a href='/category/{{ category.category }}' style="color: #cacaca; text-decoration: none;">{{ category.category }} <b style="font-weight: normal; color: #cacaca;">({{ category.cate_count }})</b></a></div>
+            </div>
             {% endfor %}
             
 
