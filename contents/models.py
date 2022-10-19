@@ -32,11 +32,11 @@ class Feed(models.Model):
 
 class Comment(models.Model):
 
-    feed = models.ForeignKey(Feed, on_delete=models.CASCADE) #장고문서를 봐보니 자신을 Content이부분에 적으라 명시가 되어있다
+    feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    
+    like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='Comments')
 

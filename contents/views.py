@@ -1,3 +1,4 @@
+from gc import get_objects
 from contents.models import Feed, Comment
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -7,6 +8,7 @@ from django.db.models import Q
 # import torch
 # import cv2
 from .Classification import update_category, upload_category
+
 
 
 @login_required 
@@ -114,6 +116,16 @@ def search(request):
     return render(request, 'search.html',{'searched':searched, 'q': q })
 
 
+
+def detail_comment(request, id ): # 댓글 읽기
+    my_feed = Feed.objects.get(id=id)
+    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
+
+    return render(request,'index.html', my_feed=my_feed, comment=comment )
+
+
+
+
 def write_comment(request, id): # 댓글 쓰기
     if request.method == 'POST':
         current_comment = Feed.objects.get(id=id)
@@ -129,10 +141,18 @@ def write_comment(request, id): # 댓글 쓰기
 
 
 
-def delete_comment(request, id ): # 댓글 삭제
-    
-    feed = Feed.objects.get(id=id)
-    comment = request.POST.get('comment')
-    feed.delete()
-    return redirect('/')
+def delete_comment(request, feed_id): # 댓글 삭제
+
+
+    if request.method == 'POST':
+
+        comment = Comment.objects.get(id= feed_id)        
+        if comment.user == request.user:
+            comment.delete()
+            return redirect('/')
+        else:
+            return HttpResponse('권한이 없습니다!')
+
+
+
 
