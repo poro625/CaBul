@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-import torch
-import cv2
+# import torch
+# import cv2
+from .machine import yolo, yolo2
+
 
 @login_required 
 def post(request):
@@ -20,22 +22,10 @@ def post(request):
         my_feed.like = 0
         my_feed.image = request.FILES['feed_image']
         my_feed.save()
-
-        print(my_feed.image)
         
-        model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-        imgs = [(f'./media/{my_feed.image}')] # batch of images
-
-        results = model(imgs)
-
-        print(results.pandas().xyxy[0]['name'])
-        print('yolo 연결 성공!')
-        category_name = results.pandas().xyxy[0]['name'][0]
-        print(category_name)
-
-        my_feed.category = category_name
-        my_feed.save()
-
+        img = my_feed.image
+        yolo(img, my_feed)
+        
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
             tag = tag.strip()
@@ -77,7 +67,11 @@ def post_update(request, id):
         post = Feed.objects.get(id=id)
         post.title = request.POST.get('title', '')
         post.content = request.POST.get('content', '')
+        post.image = request.FILES['image']
         post.save()
+        
+        img = post.image
+        yolo2(img, post)
         
         return redirect('contents:post_detail', post.id)
 
@@ -118,14 +112,6 @@ def search(request):
 
 
     return render(request, 'search.html',{'searched':searched, 'q': q })
-
-
-# def detail_comment(request, id ): # 댓글 읽기
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
-
-#     return render(request,'index.html', my_feed=my_feed, comment=comment )
-
 
 
 def write_comment(request, id): # 댓글 쓰기
