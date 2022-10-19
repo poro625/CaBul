@@ -26,8 +26,6 @@ def post(request):
 
         results = model(imgs)
 
-        print(results.pandas().xyxy[0]['name'])
-        print('yolo 연결 성공!')
         category_name = results.pandas().xyxy[0]['name'][0]
 
         my_feed.category = category_name
