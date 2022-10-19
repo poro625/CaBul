@@ -35,12 +35,8 @@
 
     <form  action="{% url 'contents:delete_comment' comment.id %}" method="POST">
     {% csrf_token %}
-
-
     <input type="submit" value='댓글 삭제'>
-
-
-
+    </form>
     {% endfor %}
 
     
@@ -63,20 +59,8 @@
     {% endif %}
 
 
-    <div>
-        <!-- <form action="{% url 'contents:likes' feeds.id %}" method='POST'>
-          {% csrf_token %}
-          {% if user in comment.like.all %}
-            <input type="submit" value='좋아요 취소'>
-          {% else %}
-            <input type="submit" value='좋아요'>
-          {% endif %}
-        </form> -->
-    </div>
-
 
 </body>
 
 </html>
 {% endblock %}
-ㅁㅁ
