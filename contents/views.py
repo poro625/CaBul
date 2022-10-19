@@ -131,11 +131,11 @@ def search(request):
     return render(request, 'search.html',{'searched':searched, 'q': q })
 
 
-# def detail_comment(request, id ): # 댓글 읽기
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
+def detail_comment(request, id ): # 댓글 읽기
+    my_feed = Feed.objects.get(id=id)
+    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
 
-#     return render(request,'index.html', my_feed=my_feed, comment=comment )
+    return render(request,'index.html', my_feed=my_feed, comment=comment )
 
 
 
