@@ -7,7 +7,7 @@ from django.db.models import Q
 import torch
 import cv2
 
-@login_required
+@login_required 
 def post(request):
     if request.method =="GET":
         return render(request, "upload.html")
@@ -19,8 +19,23 @@ def post(request):
         my_feed.user =request.user
         my_feed.like = 0
         my_feed.image = request.FILES['feed_image']
-        my_feed.category = request.POST.get('category', '')
         my_feed.save()
+
+        print(my_feed.image)
+        
+        model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+        imgs = [(f'./media/{my_feed.image}')] # batch of images
+
+        results = model(imgs)
+
+        print(results.pandas().xyxy[0]['name'])
+        print('yolo 연결 성공!')
+        category_name = results.pandas().xyxy[0]['name'][0]
+        print(category_name)
+
+        my_feed.category = category_name
+        my_feed.save()
+
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
             tag = tag.strip()
@@ -66,33 +81,6 @@ def post_update(request, id):
         
         return redirect('contents:post_detail', post.id)
 
-# @login_required
-# def Upload(request):
-#     if request.method == 'GET':  # 요청하는 방식이 GET 방식인지 확인하기
-#         return render(request, 'upload.html')
-
-#     if request.method == 'POST':
-#         user = request.user
-#         my_feed = Feed()  # 글쓰기 모델 가져오기
-#         my_feed.user = user
-#         my_feed.title = request.POST.get('title', '')  # 모델에 글 저장
-#         my_feed.content = request.POST.get('content', '')  # 모델에 글 저장
-#         my_feed.like = 0
-#         my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
-#         my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
-#         my_feed.save()
-#         tags = request.POST.get('tag', '').split(',')
-#         for tag in tags:
-#             tag = tag.strip()
-#             if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
-#                 my_feed.tags.add(tag)
-#         return redirect('/')
-
-
-# def FeedDetail(request, id):
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
-#     return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
 
 
 class TagCloudTV(TemplateView):
@@ -161,3 +149,4 @@ def delete_comment(request, id ): # 댓글 삭제
     comment = request.POST.get('comment')
     feed.delete()
     return redirect('/')
+

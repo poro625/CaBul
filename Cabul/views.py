@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from contents.models import Feed
 
+
 # Create your views here.
 
 def home(request): # home 화면
