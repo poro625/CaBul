@@ -156,6 +156,8 @@ def write_comment(request, id): # 댓글 쓰기
 
 
 def delete_comment(request, feed_id): # 댓글 삭제
+
+
     if request.method == 'POST':
 
         comment = Comment.objects.get(id= feed_id)        

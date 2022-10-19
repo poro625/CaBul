@@ -8,13 +8,13 @@
 </head>
 <body>
     <h1>게시글 수정 페이지</h1>
-    <form action= "{% url 'contents:post_update' post.id %}" method="POST">
+    <form action= "{% url 'contents:edit_comment' comment.id %}" method="POST">
         {% csrf_token %}
         <div>
-        <input type="text" name="title" placeholder="{{ post.title }}">
+        <input type="text" name="title" placeholder="{{ context.feed }}">
         </div>
         <div>
-        <textarea name="content" cols="30" rows="10">{{ post.content }}</textarea>
+        <textarea name="content" cols="30" rows="10">{{ context.comment }}</textarea>
         </div>
         <input type="submit"/>
       
