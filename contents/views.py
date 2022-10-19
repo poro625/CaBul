@@ -20,8 +20,6 @@ def post(request):
         my_feed.like = 0
         my_feed.image = request.FILES['feed_image']
         my_feed.save()
-
-        print(my_feed.image)
         
         model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
         imgs = [(f'./media/{my_feed.image}')] # batch of images
@@ -31,7 +29,6 @@ def post(request):
         print(results.pandas().xyxy[0]['name'])
         print('yolo 연결 성공!')
         category_name = results.pandas().xyxy[0]['name'][0]
-        print(category_name)
 
         my_feed.category = category_name
         my_feed.save()
@@ -118,14 +115,6 @@ def search(request):
 
 
     return render(request, 'search.html',{'searched':searched, 'q': q })
-
-
-# def detail_comment(request, id ): # 댓글 읽기
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
-
-#     return render(request,'index.html', my_feed=my_feed, comment=comment )
-
 
 
 def write_comment(request, id): # 댓글 쓰기
