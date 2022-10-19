@@ -42,11 +42,11 @@
                 <input id="comment" type="text" name="comment" > 
             </div>            
             <input type="submit">
-            <button><a href="{% url 'contents:delete_comment' feeds.id %}">delete</a></button>
-
+            <button><a href="{% url 'contents:delete_comment' feeds.id %}">댓글 삭제</a></button>
         </div>
     </form>
 
+    
     {% if feeds.user == request.user %}
     <button><a href="{% url 'contents:post_delete' feeds.id %}">delete</a></button>
     <button><a href="{% url 'contents:post_update' feeds.id %}">Edit</a></button>
@@ -54,7 +54,7 @@
 
 
     <div>
-        <form action="{% url 'contents:likes' feed_id %}" method='POST'>
+        <form action="{% url 'contents:likes' feeds.id %}" method='POST'>
           {% csrf_token %}
           {% if user in comment.like.all %}
             <input type="submit" value='좋아요 취소'>

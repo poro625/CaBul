@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
+
 
 @login_required
 def post(request):
