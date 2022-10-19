@@ -12,9 +12,12 @@ def home(request): # home 화면
             feed = Feed.objects.all().order_by('-created_at')
             feed_cate = Feed.objects.all().order_by('-category')
             feed_category = feed_cate.values_list('category', flat=True).distinct()
+
+
             return render(request, 'home.html', { 'feeds' : feed, 'categorys' : feed_category })
         else:
             return redirect('users/login')
+
 
 def category_view(request, id):
     if request.method == 'GET':
@@ -24,4 +27,5 @@ def category_view(request, id):
         }
 
         return render(request, 'category.html', context)
+
 
