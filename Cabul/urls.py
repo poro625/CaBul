@@ -25,7 +25,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('contents/', include('contents.urls')),
     path('', views.home, name='home'),
-
+    path('category/<str:id>', views.category_view, name='category'),
     #로그인 요청을 보낼 url
     path('account/login/kakao/', kakao_social_login, name='kakao_login'),
     #받은 인가 코드로 접근 토근을 받아 유저의 정보를 가져올 url

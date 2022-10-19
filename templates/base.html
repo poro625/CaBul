@@ -81,6 +81,30 @@
 </nav>
 <div style="display: flex; flex-direction: row;">
     <div style="background-color: white; width: 400px; height: 100vh;">
+        {% if user.kakao_profile %}
+        <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
+            <div style="display: flex; flex-direction: row;">
+                <div style="display: flex; flex-direction: column; text-align: center;">
+                    <img src="{{ user.kakao_profile }}" alt="" style="width: 140px; height: 140px; object-fit: cover; border-radius: 70px; margin: 25px;">
+                    <img onclick="location.href='/users/profileupload/{{ user.id }}'" src="media/default.png" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px;">
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="margin: 30px 0 20px 0;">
+                        <div><b>{{ user.nickname }}</b></div>
+                        <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.username }}</div>
+                        <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.email }}</div>
+                    </div>
+                    <div>팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div style="color: rgba(0,0,0,.55); font-size: 10pt;">현재 접속 시간 : {{ user.last_login | timesince }}</div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; margin: 0 auto 0 auto;">
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none;" href="{% url 'contents:post' %}"><b>글 작성</b></a></div>
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none;" href="{% url 'users:update' user.id %}"><b>프로필 편집</b></a></div>
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none; color: red;" href="/users/logout"><b>로그 아웃</b></a></div>
+            </div>
+        </div>
+        {% else %}
         <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
             <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; text-align: center;">
@@ -103,11 +127,15 @@
                 <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none; color: red;" href="/users/logout"><b>로그 아웃</b></a></div>
             </div>
         </div>
+        {% endif %}
         <div style="display: flex; flex-direction: column; width: 400px; height: 100%; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
-           
-        {% for category in categorys %}
-            <div>카테고리 : {{ category }}</div>
-        {% endfor %}
+
+            {% for category in categorys %} 
+        <div>
+            카테고리:<a href='/category/{{ category }}'>  {{ category }} </a>
+        </div>
+            {% endfor %}
+            
 
         </div>
     </div>
