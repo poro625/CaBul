@@ -1,4 +1,7 @@
 from unicodedata import category
+
+from gc import get_objects
+
 from contents.models import Feed, Comment
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -7,7 +10,8 @@ from django.contrib import messages
 from django.db.models import Q
 # import torch
 # import cv2
-from .machine import yolo, yolo2
+from .Classification import update_category, upload_category
+
 
 
 @login_required 
@@ -25,7 +29,7 @@ def post(request):
         my_feed.save()
         
         img = my_feed.image
-        yolo(img, my_feed)
+        upload_category(img, my_feed)
         
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
@@ -75,7 +79,7 @@ def post_update(request, id):
         post.save()
         
         img = post.image
-        yolo2(img, post)
+        update_category(img, post)
         
         return redirect('contents:post_detail', post.id)
 
@@ -121,6 +125,16 @@ def search(request):
     return render(request, 'search.html',{'searched':searched, 'q': q ,'categorys':feed_category})
 
 
+
+def detail_comment(request, id ): # 댓글 읽기
+    my_feed = Feed.objects.get(id=id)
+    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
+
+    return render(request,'index.html', my_feed=my_feed, comment=comment )
+
+
+
+
 def write_comment(request, id): # 댓글 쓰기
     if request.method == 'POST':
         current_comment = Feed.objects.get(id=id)
@@ -136,10 +150,18 @@ def write_comment(request, id): # 댓글 쓰기
 
 
 
-def delete_comment(request, id ): # 댓글 삭제
-    
-    feed = Feed.objects.get(id=id)
-    comment = request.POST.get('comment')
-    feed.delete()
-    return redirect('/')
+def delete_comment(request, feed_id): # 댓글 삭제
+
+
+    if request.method == 'POST':
+
+        comment = Comment.objects.get(id= feed_id)        
+        if comment.user == request.user:
+            comment.delete()
+            return redirect('/')
+        else:
+            return HttpResponse('권한이 없습니다!')
+
+
+
 

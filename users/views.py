@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.contrib import auth
 
 
 import re
@@ -90,7 +91,6 @@ def activate(request, uidb64, token):
         return redirect("/")
     else:
         return render(request, 'home.html', {'error' : '계정 활성화 오류'})
-    return 
 
 def login(request):
     if request.method == 'GET':

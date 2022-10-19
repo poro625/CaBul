@@ -108,6 +108,7 @@
         <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
             <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; text-align: center;">
+                    
                     <img src="{% get_media_prefix %}{{ user.profile_image }}" alt="" style="width: 140px; height: 140px; object-fit: cover; border-radius: 70px; margin: 25px;">
                     <img onclick="location.href='/users/profileupload/{{ user.id }}'" src="media/default.png" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px;">
                 </div>
