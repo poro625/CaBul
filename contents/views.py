@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-import torch
-import cv2
+# import torch
+# import cv2
+from .machine import yolo
+
 
 @login_required 
 def post(request):
@@ -21,16 +23,9 @@ def post(request):
         my_feed.image = request.FILES['feed_image']
         my_feed.save()
         
-        model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-        imgs = [(f'./media/{my_feed.image}')] # batch of images
-
-        results = model(imgs)
-
-        category_name = results.pandas().xyxy[0]['name'][0]
-
-        my_feed.category = category_name
-        my_feed.save()
-
+        img = my_feed.image
+        yolo(img, my_feed)
+        
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
             tag = tag.strip()
