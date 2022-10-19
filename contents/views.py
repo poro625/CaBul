@@ -1,5 +1,6 @@
+from unicodedata import category
 from contents.models import Feed, Comment
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
@@ -38,8 +39,11 @@ def post(request):
 def post_detail(request, id):
     my_feed = Feed.objects.get(id=id)
     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
     context = {
         'feeds':my_feed,
+        'categorys':feed_category,
         'comments': comment
     }
     return render(request, 'index.html', context)
@@ -97,6 +101,8 @@ class TaggedObjectLV(ListView):
 def search(request):
     q = request.POST.get('q', "")  # I am assuming space separator in URL like "random stuff"
     search_menu = request.POST.get('search_menu', "")
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
     print(search_menu)
     if search_menu == '1':
         query = Q(title__icontains=q)
@@ -109,9 +115,10 @@ def search(request):
     elif search_menu == '3':
         query = Q(tags__name__icontains=q)
         searched = Feed.objects.filter(query)
+   
 
 
-    return render(request, 'search.html',{'searched':searched, 'q': q })
+    return render(request, 'search.html',{'searched':searched, 'q': q ,'categorys':feed_category})
 
 
 def write_comment(request, id): # 댓글 쓰기
