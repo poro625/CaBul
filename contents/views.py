@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q
 # import torch
 # import cv2
-from .machine import yolo, yolo2
+from .Classification import update_category, upload_category
 
 
 @login_required 
@@ -24,7 +24,7 @@ def post(request):
         my_feed.save()
         
         img = my_feed.image
-        yolo(img, my_feed)
+        upload_category(img, my_feed)
         
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
@@ -71,7 +71,7 @@ def post_update(request, id):
         post.save()
         
         img = post.image
-        yolo2(img, post)
+        update_category(img, post)
         
         return redirect('contents:post_detail', post.id)
 

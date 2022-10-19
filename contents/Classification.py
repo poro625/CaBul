@@ -1,8 +1,6 @@
-from django.http import HttpResponse
 import torch
-from django.http import HttpResponse
 
-def yolo(img, my_feed):
+def upload_category(img, my_feed):
     try:
         model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
         imgs = [(f'./media/{img}')] # batch of images
@@ -17,7 +15,7 @@ def yolo(img, my_feed):
         my_feed.category = category_name
         my_feed.save()
 
-def yolo2(img, post):
+def update_category(img, post):
     try:
         model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
         imgs = [(f'./media/{img}')] # batch of images
