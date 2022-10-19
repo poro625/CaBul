@@ -11,27 +11,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>홈화면</title>
+
+    <style>
+        .FeedBoxCont {
+            width: 1400px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin: 0 0 0 100px;
+        }
+        
+        .FeedBox {
+            display: flex;
+            width: 300px;
+            height: 400px;
+            margin-top: 30px;
+
+        }
+
+    </style>
 </head>
 <body>
-    <div style="display: flex; flex-direction: row; width: 60vw; height: 50px; margin: 20px auto 0 auto; text-align: center;">
-    {% for feed in feeds %}
-    <div style="width: 300px; min-width: 300px; height: 400px; min-height: 400px; margin: 10px 10px 10px 10px; border: solid 1px black;">
-        <div>프로필 정보</div>
-        <div style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; background-color: black;">
-            <img style="width: 300px; min-width: 300px; height: 280px; min-height: 280px; object-fit: cover;" src="{% get_media_prefix %}{{ feed.image }}"></div>
-
-        <div>제목 : {{ feed.title }}</div>
-        <div>카테고리 : {{ feed.category }}</div>
-        <button onclick="location.href='/contents/detail/{{ feed.id }}'">상세 보기</button>
+    <div class="FeedBoxCont">
+        {% for feed in feeds %}
+        <div class="FeedBox" style="background-color: #fafafa; border: solid 1px #aaaaaa; box-shadow: 1px 1px 1px 1px #aaaaaa;">
+            <div style="width: 300px; min-width: 300px; height: 400px; min-height: 400px;">
+                <div style="display: flex; flex-direction: row; justify-content: space-between; height: 40px;"><div style="display: flex; flex-direction: row;""><img src="{% get_media_prefix %}{{ feed.user.profile_image }}" alt="" style="width: 20px; height: 20px; border-radius: 10px; margin: 10px 5px 0 5px;"><div style="font-weight: bold; margin-top: 7px ;">{{ feed.user.nickname }}</div></div><div style="font-weight: bold; margin: 3px 10px 0 0;">...</div></div>
+                <div style="width: 300px; min-width: 300px; height: 280px; min-height: 280px;">
+                    <img onclick="location.href='/contents/detail/{{ feed.id }}'" style="cursor: pointer; width: 300px; min-width: 300px; height: 280px; min-height: 280px; object-fit: cover;" src="{% get_media_prefix %}{{ feed.image }}"></div>
+                <div style="display: flex; flex-direction: row; justify-content: space-between;"><div style="font-size: 12pt; font-weight: bold; margin: 5px 0 0 10px;">{{ feed.title }}</div><div><img src="./static/icon/heart.png" alt="" style="width: 20px; height: 20px; margin: 5px 10px 0 0;"></div></div>
+                <div style="font-size: 10pt; font-weight: normal; margin: 0 0 0 10px; color: #aaaaaa;">{{ feed.category }}</div>
+                <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: row; margin: 3px 0 0 8px;">
+                    {% if feed.tags %}
+                    {% for tag in feed.tags.all %}
+                    <span style="height: 18px; background-color: #aaaaaa; color: #fafafa; border-radius: 5px; font-size: 10pt; margin-left: 3px; padding-left: 3px; padding-right: 3px;">
+                        #{{ tag.name }}
+                    </span>
+                    </a>
+                    {% endfor %}
+                    {% endif %}<br>
+                    </div>
+                    <div style="text-align: right; margin-right: 10px; font-size: 10pt; color: #aaaaaa;">{{ feed.created_at | timesince }} 전</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    </div>
-
-    <!-- <div style="display: flex; flex-direction: column; width: 60vw; max-width: 1500px; height: 1000px; background-color: antiquewhite; margin: 30px 0 0 30px;">
-        <div style="width: 60vw; max-width: 1500px; height: 50px; background-color: rgb(10, 10, 9);"></div>
-        <div style="width: 60vw; max-width: 1500px; height: 1000px; background-color: black; margin-top: 30px;"></div>
-    </div> -->
-
 
 
 </body>
