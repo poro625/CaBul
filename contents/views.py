@@ -1,10 +1,11 @@
+from gc import get_objects
 from contents.models import Feed, Comment
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-
+from django.http import HttpResponse
 
 @login_required
 def post(request):
@@ -154,25 +155,28 @@ def write_comment(request, id): # 댓글 쓰기
 
 
 
-def delete_comment(request, id ): # 댓글 삭제
-    
-    feed = Feed.objects.get(id=id)
-    comment = request.POST.get('comment')
-    feed.delete()
-    return redirect('/')
+def delete_comment(request, feed_id): # 댓글 삭제
+    if request.method == 'POST':
+
+        comment = Comment.objects.get(id= feed_id)        
+        if comment.user == request.user:
+            comment.delete()
+            return redirect('/')
+        else:
+            return HttpResponse('권한이 없습니다!')
 
 
 
-def likes(request, id):     # 좋아요
+def likes(request, feed_id):     # 좋아요
 
     if request.user.is_authenticated:
-        comment = get_object_or_404(Comment, id=id)
+        comment = get_objects(id=feed_id)
 
         if comment.like.filter(id=request.user.id).exists():
             comment.like.remove(request.user)
         else:
             comment.like.add(request.user)
 
-            return redirect('contents:index')
+            return redirect('/')
             
     return redirect('users:login')

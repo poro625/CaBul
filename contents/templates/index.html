@@ -31,6 +31,16 @@
     {% for comment in comments %}
     {{ comment.user.nickname }}
     {{ comment.comment }}<br>
+    
+    <form  action="{% url 'contents:delete_comment' comment.id %}" method="POST">
+    {% csrf_token %}
+
+
+    <input type="submit" value='댓글 삭제'>
+    </form>
+
+    
+
     {% endfor %}
 
     
@@ -42,10 +52,10 @@
                 <input id="comment" type="text" name="comment" > 
             </div>            
             <input type="submit">
-            <button><a href="{% url 'contents:delete_comment' feeds.id %}">댓글 삭제</a></button>
+            
         </div>
-    </form>
-
+     </form>
+   
     
     {% if feeds.user == request.user %}
     <button><a href="{% url 'contents:post_delete' feeds.id %}">delete</a></button>
@@ -62,7 +72,7 @@
             <input type="submit" value='좋아요'>
           {% endif %}
         </form>
-      </div>
+    </div>
 
 
 </body>
