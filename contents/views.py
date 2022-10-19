@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q
 # import torch
 # import cv2
-from .machine import yolo
+from .machine import yolo, yolo2
 
 
 @login_required 
@@ -67,7 +67,11 @@ def post_update(request, id):
         post = Feed.objects.get(id=id)
         post.title = request.POST.get('title', '')
         post.content = request.POST.get('content', '')
+        post.image = request.FILES['image']
         post.save()
+        
+        img = post.image
+        yolo2(img, post)
         
         return redirect('contents:post_detail', post.id)
 
