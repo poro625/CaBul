@@ -1,4 +1,3 @@
-from email import contentmanager
 from django.db import models
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
