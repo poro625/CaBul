@@ -5,9 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponse
+# import torch
+# import cv2
+from .Classification import update_category, upload_category
 
-@login_required
+
+
+@login_required 
 def post(request):
     if request.method =="GET":
         return render(request, "upload.html")
@@ -19,8 +23,11 @@ def post(request):
         my_feed.user =request.user
         my_feed.like = 0
         my_feed.image = request.FILES['feed_image']
-        my_feed.category = request.POST.get('category', '')
         my_feed.save()
+        
+        img = my_feed.image
+        upload_category(img, my_feed)
+        
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
             tag = tag.strip()
@@ -62,37 +69,14 @@ def post_update(request, id):
         post = Feed.objects.get(id=id)
         post.title = request.POST.get('title', '')
         post.content = request.POST.get('content', '')
+        post.image = request.FILES['image']
         post.save()
+        
+        img = post.image
+        update_category(img, post)
         
         return redirect('contents:post_detail', post.id)
 
-# @login_required
-# def Upload(request):
-#     if request.method == 'GET':  # 요청하는 방식이 GET 방식인지 확인하기
-#         return render(request, 'upload.html')
-
-#     if request.method == 'POST':
-#         user = request.user
-#         my_feed = Feed()  # 글쓰기 모델 가져오기
-#         my_feed.user = user
-#         my_feed.title = request.POST.get('title', '')  # 모델에 글 저장
-#         my_feed.content = request.POST.get('content', '')  # 모델에 글 저장
-#         my_feed.like = 0
-#         my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
-#         my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
-#         my_feed.save()
-#         tags = request.POST.get('tag', '').split(',')
-#         for tag in tags:
-#             tag = tag.strip()
-#             if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
-#                 my_feed.tags.add(tag)
-#         return redirect('/')
-
-
-# def FeedDetail(request, id):
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
-#     return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
 
 
 class TagCloudTV(TemplateView):
@@ -132,11 +116,13 @@ def search(request):
     return render(request, 'search.html',{'searched':searched, 'q': q })
 
 
+
 def detail_comment(request, id ): # 댓글 읽기
     my_feed = Feed.objects.get(id=id)
     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
 
     return render(request,'index.html', my_feed=my_feed, comment=comment )
+
 
 
 
@@ -169,16 +155,4 @@ def delete_comment(request, feed_id): # 댓글 삭제
 
 
 
-def likes(request, feed_id):     # 좋아요
 
-    if request.user.is_authenticated:
-        comment = get_objects(id=feed_id)
-
-        if comment.like.filter(id=request.user.id).exists():
-            comment.like.remove(request.user)
-        else:
-            comment.like.add(request.user)
-
-            return redirect('/')
-            
-    return redirect('users:login')

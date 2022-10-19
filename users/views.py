@@ -1,18 +1,15 @@
 from django.shortcuts import render, redirect
 from .models import User
 from django.contrib.auth import authenticate, login as loginsession
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib import auth, messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.contrib import auth
 
 
 import re
 import requests
-import random
-import string
 
 # SMTP 관련 인증
 from django.contrib.sites.shortcuts import get_current_site
@@ -92,7 +89,6 @@ def activate(request, uidb64, token):
         return redirect("/")
     else:
         return render(request, 'home.html', {'error' : '계정 활성화 오류'})
-    return 
 
 def login(request):
     if request.method == 'GET':
