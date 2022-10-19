@@ -159,3 +159,16 @@ def delete_comment(request, id ): # 댓글 삭제
     comment = request.POST.get('comment')
     feed.delete()
     return redirect('/')
+
+def create(request):
+  if request.method=="POST":
+    post = Feed()
+    post.title = request.POST['title']
+    post.body = request.POST['body']
+    post.date = timezone.now()
+    post.image = request.FILES['image']
+    post.save()
+    return redirect('/detail/'+str(post.id),{'post':post})
+  else:
+    post = Post()
+    return render(request,'create.html',{'post':post})

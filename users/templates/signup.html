@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+  {% comment %} google pont {% endcomment %}
+
+
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,28 +20,35 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
 
-
-
-
   <title>회원 가입</title>
+
+  <style>
+    {% comment %} pont style {% endcomment %}
+    *{
+      font-family: 'Jua', sans-serif;
+      font-family: 'Nanum Gothic Coding', monospace;
+    }
+  </style>
+
+
 </head>
 
 <body style="background: #FAFAFA;">
-  <div style="display: flex; flex-direction: column; align-items:center; width: 100%; margin: 20vh 0 20vh 0; ">
+  <div style="display: flex; flex-direction: column; align-items:center; width: 100%; margin: 2vh 0 20vh 0;  ">
     <div
       style="text-align:center; border:solid 1px rgba(219, 219, 219, 1); width: 400px; height: 620px; margin-top: 30px; background: white">
       <!-- 바로 아랫줄 사진첨부 -->
       <div style="margin-top: 20px; padding: 20px;"> <img src="" alt=""> </div>
-      <div style="padding: 0 40px 0 40px; font-weight:bold; color: gray; font-size: 15pt; font-weight: normal;">친구들의 사진과
-        동영상을 보려면 가입하세요</div>
+      <div style="padding: 0 40px 0 40px; font-weight:bold; color: gray; font-size: 15pt; font-weight: normal;">최고가 되려면 
+         가입하세요.</div>
       <div
         style="display: flex; flex-direction: row; text-align: center; place-content: center; margin: 20px 0 20px 0;">
         <hr style="width: 100px;">
-        <div style="margin: 5px 20px 0 20px; color: gray;">또는</div>
+        <div style="margin: 5px 20px 0 20px; color: gray;"></div>
         <hr style="width: 100px;">
       </div>
       <div class="wrap">
-        {% comment %} <form class="form-area" method="post" action="/sign-up/"> {% endcomment %}
+        <form class="form-area" method="post" action="/sign-up/">
         <form action="{% url 'users:signup' %}" method="POST">
           {% csrf_token %}
           <div class="form-group mt-2 mb-2">
@@ -48,7 +61,7 @@
           </div>
           <div class="form-group mt-2 mb-2">
             <input type="text" style="width: 300px; margin-left: 50px; background-color: #fafafa;" class="form-control"
-              id="nickname" name="nickname" placeholder="사용자 이름">
+              id="nickname" name="nickname" placeholder="닉네임">
           </div>
           <div class="form-group mt-2 mb-2">
             <input type="password" style="width: 300px; margin-left: 50px; background-color: #fafafa;"
@@ -59,7 +72,7 @@
               class="form-control" id="password2" name="password2" placeholder="비밀번호 확인">
           </div>
           <div style="padding: 0 40px 0 40px; margin: 20px 0 20px 0; color: gray; font-size: 9pt; font-weight: normal;">
-            저희 서비스를 이용하는 사람이 회원님의 연락처 정보를 Instagram에 업로드했을 수도 있습니다. 더 알아보기</div>
+            저희 서비스를 이용하는 사람이 회원님의 연락처 정보를 Cabul에  업로드했을 수도 있습니다.</div>
       </div>
       <div>
         {% if error %}
@@ -72,7 +85,7 @@
     </div>
     <div
       style="padding: 35px ;text-align:center; border:solid 1px rgba(219, 219, 219, 1); width: 400px; height: 100px; margin-top: 30px; background: white">
-      <div>계정이 있으신가요? <a href="{% url 'users:login' %}">로그인</a></div>
+      <div>계정이 있으신가요? 그럴리가..? <a href="{% url 'users:login' %}">로그인</a></div>
     </div>
   </div>
 
