@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
+import torch
+import cv2
 
 @login_required
 def post(request):
