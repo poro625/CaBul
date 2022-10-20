@@ -42,21 +42,30 @@
                     <div style="font-weight: bold; margin-top: 7px ;">
                     {{ feed.user.nickname }}
                 </div>
+                {% if feed.user != request.user %}
+                    {% if feed.user in user.follow.all %}
+                        <a href= "{% url 'users:follow' feed.user.id %}" style="border: solid 1px #aaaaaa; border-radius: 4px; height: 25px; margin: 5px 0 0 10px; padding-left: 5px; padding-right: 5px; font-size: 11pt; text-decoration: none; color: #fafafa;; background-color: #aaaaaa;">팔로잉</a>
+                        {% else %}
+                        <a href= "{% url 'users:follow' feed.user.id %}" style="border: solid 1px #aaaaaa; border-radius: 4px; height: 25px; margin: 5px 0 0 10px; padding-left: 5px; padding-right: 5px; font-size: 11pt; text-decoration: none; color: #aaaaaa;; background-color: #fafafa;">팔로우</a>
+                    {% endif %}
+                {% endif %}    
             </div>
             <div class="dropdown">
                 <button type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background-color: #fafafa;">
                     <div style="font-weight: bold; margin: 3px 10px 0 0;">...</div>
                 </button>
+                {% if feed.user == request.user %}
                 <ul class="dropdown-menu" style="background-color: #fafafa; border: solid 1px #aaaaaa; box-shadow: 1px 1px 1px 1px #aaaaaa;">
                     <li><a style="text-decoration: none; color: black; margin-left: 30px;" href="{% url 'contents:post_update' feed.id %}">수정</a></li>
                     <li><a style="text-decoration: none; color: red; margin-left: 30px;" href="{% url 'contents:post_delete' feed.id %}">삭제</a></li>
                 </ul>
+                {% endif %}
             </div>
         </div>
 
                 <div style="width: 300px; min-width: 300px; height: 280px; min-height: 280px;">
                     <img onclick="location.href='/contents/detail/{{ feed.id }}'" style="cursor: pointer; width: 300px; min-width: 300px; height: 280px; min-height: 280px; object-fit: cover;" src="{% get_media_prefix %}{{ feed.image }}"></div>
-                <div style="display: flex; flex-direction: row; justify-content: space-between;"><div style="font-size: 12pt; font-weight: bold; margin: 5px 0 0 10px;">{{ feed.title }}</div>
+                <div style="display: flex; flex-direction: row; justify-content: space-between;"><div style="font-size: 12pt; font-weight: bold; margin: 5px 0 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px;">{{ feed.title }}</div>
                 <form action='{% url 'contents:post_likes' feed.id %}' method='post'>
                     {% csrf_token %}
                     <div style="display: flex; flex-direction: row;">
