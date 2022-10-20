@@ -238,7 +238,7 @@ def password(request, id): # 비밀번호
             return render(request, 'profile_edit_password.html', {'error':'비밀번호가 일치하지 않습니다'})
         
 @login_required
-def user_view(request): # 
+def user_view(request): #
     if request.method == 'GET':
         user_list = User.objects.all().exclude(username=request.user.username)
         feed = Feed.objects.all().order_by('-created_at')
