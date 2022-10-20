@@ -32,7 +32,6 @@
 
 </head>
 <body>
-
     <div style="width: 1350px; background-color: #fafafa; border: solid 1px #aaaaaa; box-shadow: 1px 1px 1px 1px #aaaaaa; margin: 30px 0 0 100px;">
         <div style="width: 1350px; min-width: 1350px; height: 800px; min-height: 800px;">
             <div style="display: flex; flex-direction: row; justify-content: space-between; height: 40px; border: solid 1px #aaaaaa;">
@@ -49,6 +48,10 @@
                     {% for comment in comments %}
                     <b>{{ comment.user.nickname }}</b>
                     {{ comment.comment }}<br>
+                    <form  action="{% url 'contents:delete_comment' comment.id %}" method="POST">
+                      {% csrf_token %}
+                      <input type="submit" value='댓글 삭제'>
+                      </form>
                     {% endfor %}
                 </div>
             </div>
@@ -164,4 +167,6 @@
 </body>
 
 </html>
+
 {% endblock %}
+

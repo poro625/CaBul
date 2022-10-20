@@ -1,19 +1,19 @@
 from django.shortcuts import render, redirect
 from .models import User
+from contents.models import Feed
 from django.contrib.auth import authenticate, login as loginsession
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from contents.models import Feed
+from django.contrib import auth
+
 
 
 import re
 import requests
-import random
-import string
 
 # SMTP 관련 인증
 from django.contrib.sites.shortcuts import get_current_site
@@ -93,7 +93,6 @@ def activate(request, uidb64, token):
         return redirect("/")
     else:
         return render(request, 'home.html', {'error' : '계정 활성화 오류'})
-    return 
 
 def login(request):
     if request.method == 'GET':
@@ -152,6 +151,7 @@ def update(request, id):
         user.username = request.POST.get('username')
         user.nickname = request.POST.get('nickname')
         
+        
         exist_nickname = get_user_model().objects.filter(nickname=user.nickname)
         if exist_nickname:
             return render(request, 'profile_edit.html', {'error': '이미 존재하는 닉네임입니다.'})
@@ -161,6 +161,7 @@ def update(request, id):
     
 def profileupload(request, id):
     if request.method == 'GET':
+
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')
@@ -189,6 +190,7 @@ def profileupload(request, id):
         return render(request, 'profileupload.html')
 
 def password(request, id): # 비밀번호 변경 페이지 접근
+
     if request.method == 'GET':# 프로필 수정 페이지 접근
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
@@ -242,7 +244,6 @@ def user_view(request):
     if request.method == 'GET':
         # 사용자를 불러오기, exclude와 request.user.username 를 사용해서 '로그인 한 사용자'를 제외하기
         user_list = User.objects.all().exclude(username=request.user.username)
-
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')

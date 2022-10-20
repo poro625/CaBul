@@ -1,12 +1,20 @@
+from unicodedata import category
+
+from gc import get_objects
+
 from contents.models import Feed, Comment
-from django.shortcuts import get_object_or_404, redirect, render
+
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
 # import torch
 # import cv2
-from .machine import yolo, yolo2
+from .Classification import update_category, upload_category
+
 
 
 @login_required 
@@ -24,7 +32,7 @@ def post(request):
         my_feed.save()
         
         img = my_feed.image
-        yolo(img, my_feed)
+        upload_category(img, my_feed)
         
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
@@ -37,6 +45,7 @@ def post(request):
     
 def post_detail(request, id):
     my_feed = Feed.objects.get(id=id)
+
     comment = Comment.objects.filter(feed_id=id).order_by('created_at')
 
     feed = Feed.objects.all().order_by('-created_at')
@@ -94,7 +103,7 @@ def post_update(request, id):
         post.save()
         
         img = post.image
-        yolo2(img, post)
+        update_category(img, post)
         
         return redirect('contents:post_detail', post.id)
 
@@ -120,6 +129,8 @@ class TaggedObjectLV(ListView):
 def search(request):
     q = request.POST.get('q', "")  # I am assuming space separator in URL like "random stuff"
     search_menu = request.POST.get('search_menu', "")
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
     print(search_menu)
     if search_menu == '1':
         query = Q(title__icontains=q)
@@ -132,6 +143,7 @@ def search(request):
     elif search_menu == '3':
         query = Q(tags__name__icontains=q)
         searched = Feed.objects.filter(query)
+
     
     elif search_menu == '4':
         query = Q(category__icontains=q)
@@ -180,10 +192,18 @@ def write_comment(request, id): # 댓글 쓰기
 
 
 
-def delete_comment(request, id ): # 댓글 삭제
-    
-    feed = Feed.objects.get(id=id)
-    comment = request.POST.get('comment')
-    feed.delete()
-    return redirect('/')
+def delete_comment(request, feed_id): # 댓글 삭제
+
+
+    if request.method == 'POST':
+
+        comment = Comment.objects.get(id= feed_id)        
+        if comment.user == request.user:
+            comment.delete()
+            return redirect('/')
+        else:
+            return HttpResponse('권한이 없습니다!')
+
+
+
 

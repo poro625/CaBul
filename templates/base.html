@@ -133,6 +133,7 @@
         <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
             <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; text-align: center;">
+                    
                     <img src="{% get_media_prefix %}{{ user.profile_image }}" alt="" style="width: 140px; height: 140px; object-fit: cover; border-radius: 70px; margin: 25px;">
                     <img onclick="location.href='/users/profileupload/{{ user.id }}'" src="media/default.png" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px;">
                 </div>
@@ -143,6 +144,7 @@
                         <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.email }}</div>
                     </div>
                     <div>팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div>현재 게시글의 갯수는 {{ feed.title.count }} 개 입니다</div>
                     <div style="color: rgba(0,0,0,.55); font-size: 10pt;">현재 접속 시간 : {{ user.last_login | timesince }}</div>
                 </div>
             </div>
