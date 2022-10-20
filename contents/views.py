@@ -105,7 +105,7 @@ def post_update(request, id):
         img = post.image
         update_category(img, post)
         
-        return redirect('contents:post_detail', post.id)
+        return redirect('contents:post_detail', id)
 
 
 
@@ -188,19 +188,15 @@ def write_comment(request, id): # 댓글 쓰기
         FC.feed = current_comment
         FC.save()
 
-    return redirect('/')
-
+    return redirect('contents:post_detail', id)
 
 
 def delete_comment(request, feed_id): # 댓글 삭제
-
-
     if request.method == 'POST':
-
         comment = Comment.objects.get(id= feed_id)        
         if comment.user == request.user:
             comment.delete()
-            return redirect('/')
+            return redirect('contents:post_detail', id)
         else:
             return HttpResponse('권한이 없습니다!')
 
