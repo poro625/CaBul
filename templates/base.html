@@ -39,6 +39,18 @@
             font-family: 'Nanum Gothic Coding', monospace;
         }
 
+        .category {
+            width: 400px;
+            height: 50px;
+            text-align: right;
+            padding: 10px 40px;
+            font-weight: bold;
+            cursor: pointer;
+
+        }
+        .category:hover {
+            background-color: #aaaaaa;
+        }
 
     </style>
 </head>
@@ -61,8 +73,9 @@
                 <option value="1">제목</option>
                 <option value="2">내용</option>
                 <option value="3">태그</option>
+                <option value="4">카테고리</option>
             </select>
-            <input class="form-control" style="width: 200px" type="search" placeholder="Search" aria-label="Search" name="q">
+            <input class="form-control" style="width: 200px; margin-left: 10px;" type="search" placeholder="Search" aria-label="Search" name="q">
         </form>
         <form class="form-inline my-2 my-lg-0">
             {% if not user.is_authenticated %}
@@ -82,9 +95,9 @@
                     </span>
                 </li>
                 <li class="nav-item active" style="display: flex; flex-direction: row;">
-                    <a class="nav-link" href="/users/logout"> 로그아웃 </a>
-                    <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
                     <a class="nav-link" href="{% url 'contents:post' %}"> 글 작성 </a>
+                    <a class="nav-link" href="{% url 'users:update' user.id %}"> 프로필 편집 </a>
+                    <a class="nav-link" href="/users/logout"> 로그아웃 </a>
                 </li>
             </ul>
             {% endif %}
@@ -92,7 +105,31 @@
     </div>
 </nav>
 <div style="display: flex; flex-direction: row;">
-    <div style="background-color: white; width: 400px; height: 100vh;">
+    <div style="background-color: white; width: 400px; height: 200vh;">
+        {% if user.kakao_profile %}
+        <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
+            <div style="display: flex; flex-direction: row;">
+                <div style="display: flex; flex-direction: column; text-align: center;">
+                    <img src="{{ user.kakao_profile }}" alt="" style="width: 140px; height: 140px; object-fit: cover; border-radius: 70px; margin: 25px;">
+                    <img onclick="location.href='/users/profileupload/{{ user.id }}'" src="media/default.png" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px;">
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="margin: 30px 0 20px 0;">
+                        <div><b>{{ user.nickname }}</b></div>
+                        <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.username }}</div>
+                        <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.email }}</div>
+                    </div>
+                    <div>팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div style="color: rgba(0,0,0,.55); font-size: 10pt;">현재 접속 시간 : {{ user.last_login | timesince }}</div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; margin: 0 auto 0 auto;">
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none;" href="{% url 'contents:post' %}"><b>글 작성</b></a></div>
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none;" href="{% url 'users:update' user.id %}"><b>프로필 편집</b></a></div>
+                <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none; color: red;" href="/users/logout"><b>로그 아웃</b></a></div>
+            </div>
+        </div>
+        {% else %}
         <div style="display: flex; flex-direction: column; width: 400px; height: 250px; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
             <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; text-align: center;">
@@ -115,7 +152,15 @@
                 <div style="margin: 10px; font-size: 10pt;"><a style="text-decoration: none; color: red;" href="/users/logout"><b>로그 아웃</b></a></div>
             </div>
         </div>
-        <div style="display: flex; flex-direction: column; width: 400px; height: 100%; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa; background-color: black;" >
+        {% endif %}
+        <div style="display: flex; flex-direction: column; width: 400px; height: 100%; background-color: #fafafa; margin-top: 30px; border: solid 1px #aaaaaa; border-left: none; box-shadow: 1px 1px 1px 1px #aaaaaa;">
+
+            <div class="category" onclick="location.href='/'"> 분류 전체보기 <b style="font-weight: normal; color: #cacaca;">({{ feed_count_all }})</b></div>
+            {% for category in categorys %} 
+            <div>
+                <div class="category"><a href='/category/{{ category.category }}' style="color: #cacaca; text-decoration: none;">{{ category.category }} <b style="font-weight: normal; color: #cacaca;">({{ category.cate_count }})</b></a></div>
+            </div>
+            {% endfor %}
             
         </div>
     </div>

@@ -4,8 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
+# import torch
+# import cv2
+from .machine import yolo, yolo2
 
-@login_required
+
+@login_required 
 def post(request):
     if request.method =="GET":
         return render(request, "upload.html")
@@ -17,8 +21,11 @@ def post(request):
         my_feed.user =request.user
         my_feed.like = 0
         my_feed.image = request.FILES['feed_image']
-        my_feed.category = request.POST.get('category', '')
         my_feed.save()
+        
+        img = my_feed.image
+        yolo(img, my_feed)
+        
         tags = request.POST.get('tag', '').split(',')
         for tag in tags:
             tag = tag.strip()
@@ -30,10 +37,33 @@ def post(request):
     
 def post_detail(request, id):
     my_feed = Feed.objects.get(id=id)
-    comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
+    comment = Comment.objects.filter(feed_id=id).order_by('created_at')
+
+    feed = Feed.objects.all().order_by('-created_at')
+    feed_count_all = len(feed)
+
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category_all = feed_cate.values_list('category', flat=True)
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
+    feed_categorys = []
+    for cate in feed_category:
+        cate_count = 0
+        for i in feed_category_all:
+            if cate == i:
+                cate_count += 1
+        feed_categorys.append({
+            'category' : cate,
+            'cate_count' : cate_count
+        })
+
+    same_feed_categorys = Feed.objects.filter(category=my_feed.category)
+
     context = {
         'feeds':my_feed,
-        'comments': comment
+        'comments': comment,
+        'feed_count_all':feed_count_all,
+        'categorys' : feed_categorys,
+        'same_feed_categorys' :same_feed_categorys
     }
     return render(request, 'index.html', context)
 
@@ -60,37 +90,14 @@ def post_update(request, id):
         post = Feed.objects.get(id=id)
         post.title = request.POST.get('title', '')
         post.content = request.POST.get('content', '')
+        post.image = request.FILES['image']
         post.save()
+        
+        img = post.image
+        yolo2(img, post)
         
         return redirect('contents:post_detail', post.id)
 
-# @login_required
-# def Upload(request):
-#     if request.method == 'GET':  # 요청하는 방식이 GET 방식인지 확인하기
-#         return render(request, 'upload.html')
-
-#     if request.method == 'POST':
-#         user = request.user
-#         my_feed = Feed()  # 글쓰기 모델 가져오기
-#         my_feed.user = user
-#         my_feed.title = request.POST.get('title', '')  # 모델에 글 저장
-#         my_feed.content = request.POST.get('content', '')  # 모델에 글 저장
-#         my_feed.like = 0
-#         my_feed.image = "https://i1.ruliweb.com/img/22/10/04/1839e60028750ad5d.jpg"
-#         my_feed.category = request.POST.get('category', '') # 모델에 카테고리 저장
-#         my_feed.save()
-#         tags = request.POST.get('tag', '').split(',')
-#         for tag in tags:
-#             tag = tag.strip()
-#             if tag != '': # 태그를 작성하지 않았을 경우에 저장하지 않기 위해서
-#                 my_feed.tags.add(tag)
-#         return redirect('/')
-
-
-# def FeedDetail(request, id):
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
-#     return render(request, 'index.html', {'feeds':my_feed, 'comments': comment})
 
 
 class TagCloudTV(TemplateView):
@@ -125,17 +132,37 @@ def search(request):
     elif search_menu == '3':
         query = Q(tags__name__icontains=q)
         searched = Feed.objects.filter(query)
+    
+    elif search_menu == '4':
+        query = Q(category__icontains=q)
+        searched = Feed.objects.filter(query)
+    else :
+        return redirect('/')
+    
+    feed = Feed.objects.all().order_by('-created_at')
+    feed_count_all = len(feed)
 
-
-    return render(request, 'search.html',{'searched':searched, 'q': q })
-
-
-# def detail_comment(request, id ): # 댓글 읽기
-#     my_feed = Feed.objects.get(id=id)
-#     comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
-
-#     return render(request,'index.html', my_feed=my_feed, comment=comment )
-
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category_all = feed_cate.values_list('category', flat=True)
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
+    feed_categorys = []
+    for cate in feed_category:
+        cate_count = 0
+        for i in feed_category_all:
+            if cate == i:
+                cate_count += 1
+        feed_categorys.append({
+            'category' : cate,
+            'cate_count' : cate_count
+        })
+    
+    context = {
+        'searched':searched,
+        'q': q,
+        'feed_count_all':feed_count_all,
+        'categorys' : feed_categorys
+        }
+    return render(request, 'search.html', context)
 
 
 def write_comment(request, id): # 댓글 쓰기
@@ -160,15 +187,3 @@ def delete_comment(request, id ): # 댓글 삭제
     feed.delete()
     return redirect('/')
 
-def create(request):
-  if request.method=="POST":
-    post = Feed()
-    post.title = request.POST['title']
-    post.body = request.POST['body']
-    post.date = timezone.now()
-    post.image = request.FILES['image']
-    post.save()
-    return redirect('/detail/'+str(post.id),{'post':post})
-  else:
-    post = Post()
-    return render(request,'create.html',{'post':post})
