@@ -14,6 +14,7 @@ from django.db.models import Q
 # import torch
 # import cv2
 from .Classification import update_category, upload_category
+from users.models import User
 
 
 
@@ -51,6 +52,9 @@ def post_detail(request, id):
     feed = Feed.objects.all().order_by('-created_at')
     feed_count_all = len(feed)
 
+    user_feed = Feed.objects.filter(user_id=request.user.id)
+    user_feed_count = len(user_feed)
+
     feed_cate = Feed.objects.all().order_by('-category')
     feed_category_all = feed_cate.values_list('category', flat=True)
     feed_category = feed_cate.values_list('category', flat=True).distinct()
@@ -67,12 +71,16 @@ def post_detail(request, id):
 
     same_feed_categorys = Feed.objects.filter(category=my_feed.category)
 
+    user_list = User.objects.all().exclude(id=request.user.id)
+
     context = {
         'feeds':my_feed,
         'comments': comment,
         'feed_count_all':feed_count_all,
         'categorys' : feed_categorys,
-        'same_feed_categorys' :same_feed_categorys
+        'same_feed_categorys' : same_feed_categorys,
+        'user_feed_count' : user_feed_count,
+        'user_list' : user_list
     }
     return render(request, 'index.html', context)
 
@@ -154,6 +162,9 @@ def search(request):
     feed = Feed.objects.all().order_by('-created_at')
     feed_count_all = len(feed)
 
+    user_feed = Feed.objects.filter(user_id=request.user.id)
+    user_feed_count = len(user_feed)
+
     feed_cate = Feed.objects.all().order_by('-category')
     feed_category_all = feed_cate.values_list('category', flat=True)
     feed_category = feed_cate.values_list('category', flat=True).distinct()
@@ -172,7 +183,8 @@ def search(request):
         'searched':searched,
         'q': q,
         'feed_count_all':feed_count_all,
-        'categorys' : feed_categorys
+        'categorys' : feed_categorys,
+        'user_feed_count' : user_feed_count
         }
     return render(request, 'search.html', context)
 

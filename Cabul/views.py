@@ -13,6 +13,9 @@ def home(request): # home 화면
             feed = Feed.objects.all().order_by('-created_at')
             feed_count_all = len(feed)
 
+            user_feed = Feed.objects.filter(user_id=request.user.id)
+            user_feed_count = len(user_feed)
+
             feed_cate = Feed.objects.all().order_by('-category')
             feed_category_all = feed_cate.values_list('category', flat=True)
             feed_category = feed_cate.values_list('category', flat=True).distinct()
@@ -26,7 +29,7 @@ def home(request): # home 화면
                     'category' : cate,
                     'cate_count' : cate_count
                 })
-            return render(request, 'home.html', { 'feeds' : feed, 'categorys' : feed_categorys, 'feed_count_all':feed_count_all })
+            return render(request, 'home.html', { 'feeds' : feed, 'categorys' : feed_categorys, 'feed_count_all':feed_count_all, 'user_feed_count':user_feed_count })
         else:
             return redirect('users/login')
 
@@ -37,6 +40,9 @@ def category_view(request, id):
 
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
+
+        user_feed = Feed.objects.filter(user_id=request.user.id)
+        user_feed_count = len(user_feed)
 
         feed_cate = Feed.objects.all().order_by('-category')
         feed_category_all = feed_cate.values_list('category', flat=True)
@@ -55,7 +61,8 @@ def category_view(request, id):
         context = {
             'feeds':my_feed,
             'feed_count_all':feed_count_all,
-            'categorys' : feed_categorys
+            'categorys' : feed_categorys,
+            'user_feed_count' : user_feed_count
         }
 
         return render(request, 'category.html', context)

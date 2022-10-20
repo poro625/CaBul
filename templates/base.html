@@ -118,7 +118,8 @@
                         <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.username }}</div>
                         <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.email }}</div>
                     </div>
-                    <div>팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div style="font-size: 10pt;">팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div style="color: rgba(0,0,0,.55); font-size: 10pt;">작성한 글 : {{ user_feed_count }} 개</div>
                     <div style="color: rgba(0,0,0,.55); font-size: 10pt;">현재 접속 시간 : {{ user.last_login | timesince }}</div>
                 </div>
             </div>
@@ -142,8 +143,8 @@
                         <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.username }}</div>
                         <div style="color: rgba(0,0,0,.55); font-size: 10pt;">{{ user.email }}</div>
                     </div>
-                    <div>팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
-                    <div>현재 게시글의 갯수는 {{ feed.title.count }} 개 입니다</div>
+                    <div style="font-size: 10pt;">팔로잉 {{ user.follow.count }} 명  |  팔로워 {{ user.followee.count }} 명</div>
+                    <div style="color: rgba(0,0,0,.55); font-size: 10pt;">작성한 글 : {{ user_feed_count }} 개</div>
                     <div style="color: rgba(0,0,0,.55); font-size: 10pt;">현재 접속 시간 : {{ user.last_login | timesince }}</div>
                 </div>
             </div>
