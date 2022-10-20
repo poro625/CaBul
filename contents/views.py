@@ -11,8 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from django.db.models import Q
-# import torch
-# import cv2
 from .Classification import update_category, upload_category
 
 
@@ -50,6 +48,7 @@ def post_detail(request, id):
 
     feed = Feed.objects.all().order_by('-created_at')
     feed_count_all = len(feed)
+
 
     feed_cate = Feed.objects.all().order_by('-category')
     feed_category_all = feed_cate.values_list('category', flat=True)

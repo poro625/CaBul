@@ -110,7 +110,7 @@ def login(request):
             loginsession(request, user)
             return redirect('/')
         else:
-            return render(request, 'login.html', {'error':'이메일 혹은 패스워드를 확인 해 주세요!'})
+            return render(request, 'login.html', {'error':'이메일 인증 or 이메일 패스워드를 확인해 주세요!'})
 
 @login_required
 def logout(request):   #로그아웃 함수
