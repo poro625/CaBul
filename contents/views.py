@@ -9,7 +9,6 @@ from django.db.models import Q
 
 # import torch
 # import cv2
-from .Classification import update_category, upload_category
 from users.models import User
 
 from .classification import update_category, upload_category

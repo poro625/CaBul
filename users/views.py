@@ -258,8 +258,6 @@ def user_view(request): #
         user_feed = Feed.objects.filter(user_id=request.user.id)
         user_feed_count = len(user_feed)
 
-        user_list = User.objects.all().exclude(username=request.user.username)
-
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')
