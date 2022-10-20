@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     {% load static %}
     <title>{% block title %}{% endblock %} | CaBul</title>
@@ -29,6 +33,11 @@
         .timeline-container {
             margin-top : 25px
         }
+        
+        *{
+            font-family: 'Jua', sans-serif;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
 
         .category {
             width: 400px;
@@ -42,16 +51,18 @@
         .category:hover {
             background-color: #aaaaaa;
         }
+
     </style>
 </head>
 <body>
+    
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="border-bottom: solid 2px #aaaaaa;">
     <div class="container">
-        <a class="navbar-brand" href="/">SpartaSNS</a>
+        <a class="navbar-brand" href="/">Cabul</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href='{% url "users:user-list" %}'> 친구 <span class="sr-only"></span></a>
+                    <a class="nav-link" href='{% url "users:user-list" %}'> 누구냐 넌?<span class="sr-only"></span></a>
                 </li>
             </ul>
         </div>
@@ -151,7 +162,6 @@
             </div>
             {% endfor %}
             
-
         </div>
     </div>
     <div>

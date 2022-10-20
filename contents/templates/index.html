@@ -1,8 +1,3 @@
-{% extends 'base.html' %}
-
-{% block content %}
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +26,6 @@
     </style>
 
 </head>
-
 <body>
     <!-- <div>상세 페이지</div>
     {{ feeds.title }}
@@ -48,15 +42,12 @@
     {% comment %} href="{% url 'tag_cloud' %}">TagCloud</a> {% endcomment %}
     {% endif %}<br>
 
-    {% for comment in comments %}
-    {{ comment.user.nickname }}
-    {{ comment.comment }}<br>
-    {% endfor %}
+        {% for comment in comments %}
+        {{ comment.user.nickname }}
+        {% endfor %}
 
-    
-    <form  action="comment/{{ feeds.id }}" method="POST">
-        {% csrf_token %}
-        <div>
+        <form  action="comment/{{ feeds.id }}" method="POST">
+            {% csrf_token %}
             <div>
                 <label for="comment">댓글</label>
                 <input id="comment" type="text" name="comment" > 
@@ -196,7 +187,6 @@
         </div>
         {% endfor %}
     </div>
-
 
 
 

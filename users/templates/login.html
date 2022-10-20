@@ -5,26 +5,138 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
-</head>
-<body>
-<h1>로그인 페이지</h1>
 
+    <style>
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+/* zocial */
+        /* zocial */
+[class*="entypo-"]:before {
+    font-family: 'entypo', sans-serif;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; 
+  }
+  
+  
+  h2 {
+    
+    margin-left:12px;
+  }
+  
+  body {
+    {% comment %} background: #272125; {% endcomment %}
+    font-family: 'Roboto', sans-serif;
+    
+  }
+  
+  form {
+    position:relative;
+    margin: 50px auto;
+    width: 380px;
+    height: auto;
+  }
+  
+  input {
+    padding: 16px;
+    border-radius:7px;
+    border:0px;
+    background: rgba(255,255,255,.2);
+    display: block;
+    margin: 15px;
+    width: 300px;  
+    font-size:18px;
+    height: 54px;
+  }
+  
+  input:focus {
+    outline-color: rgba(0,0,0,0);
+    background: rgba(255,255,255,.95);
+    color: #e74c3c;
+  }
+  
+  button {
+    float:right;
+    height: 121px;
+    width: 50px;
+    border: 0px;
+    background: #e74c3c;
+    border-radius:7px;
+    padding: 10px;
+    font-size:22px;
+    color: black;
+    
+  }
+  
+  .inputUserIcon {
+    position:absolute;
+    top:68px;
+    right: 80px;
+    
+  }
+  
+  .inputPassIcon {
+    position:absolute;
+    top:136px;
+    right: 80px;
+    
+  }
+  
+  input::-webkit-input-placeholder {
+    {% comment %} color: black {% endcomment %}
+  }
+  
+  input:focus::-webkit-input-placeholder {
+    color: #e74c3c;
+  }
+
+    </style>
+
+
+
+</head>
+<body  >
 <form action="{% url 'users:login' %}" method="POST">
     {% csrf_token %}
-    <input type="text" name="email" placeholder="email" id="email" class="email"/>
-    <input type="password" name="password" placeholder="password">
-    <input type="submit">
-</form>
-<a id="kakao-login-btn" href="/account/login/kakao">
-    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼"/>
-</a>
-<a href="{% url 'users:signup' %}">회원가입</a>
+        <h2><span class="entypo-login"><i class="fa fa-sign-in"></i></span> Login</h2>
+        <button class="submit"><span class="entypo-lock"><i class="fa fa-lock"></i></span></button>
+        
+        <span class="entypo-user inputUserIcon">
+           <i class="fa fa-user"></i>
+         </span>
+        <input type="text" class="user" placeholder="urser email"/>
+        <span class="entypo-key inputPassIcon">
+           <i class="fa fa-key"></i>
+         </span>
+        <input type="password" class="pass"placeholder="password"/>
+        <button>
+            <a href="{% url 'users:signup' %}">회원가입</a>
+        </button><hr>
 
-{% if error %}
-        <div class="alert alert-danger" role="alert">
-          {{ error }}
+        <div class="alert alert-danger" role="alert">    
+        <a id="kakao-login-btn" href="/account/login/kakao">
+
+            <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼"/>
+            <hr>
+            {% if error %}
+                
+            {{ error }}
         </div>
         {% endif %}
+        </a>
+
+
+
+</form>
+
+
+
 
 </body>
 </html>
