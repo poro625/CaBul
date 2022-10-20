@@ -21,15 +21,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('contents/', include('contents.urls')),
-    path('', views.home, name='home'),
-    path('category/<str:id>', views.category_view, name='category'),
-    #로그인 요청을 보낼 url
-    path('account/login/kakao/', kakao_social_login, name='kakao_login'),
-    #받은 인가 코드로 접근 토근을 받아 유저의 정보를 가져올 url
-    path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'),
-    path('contents/', include('contents.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('admin/', admin.site.urls), #admin 페이지 접속
+    path('users/', include('users.urls')), # users 앱 url 연결
+    path('contents/', include('contents.urls')), # contents 앱 url 연결
+    path('', views.home, name='home'), # home화면 연결
+    path('category/<str:id>', views.category_view, name='category'), # 카테고리 분류 페이지 연결
+    path('account/login/kakao/', kakao_social_login, name='kakao_login'), # 카카오 로그인 요청을 보낼 url
+    path('account/login/kakao/callback/', kakao_social_login_callback, name='kakao_login_callback'), # 카카오 받은 인가 코드로 접근 토근을 받아 유저의 정보를 가져올 url
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # static 경로 설정
 
