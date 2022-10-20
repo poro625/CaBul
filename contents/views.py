@@ -1,22 +1,17 @@
-from unicodedata import category
-
-from gc import get_objects
-
 from contents.models import Feed, Comment
 
-from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+from django.shortcuts import HttpResponse, redirect, render
 
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
-from django.contrib import messages
 from django.db.models import Q
-from .Classification import update_category, upload_category
+from .classification import update_category, upload_category
 
 
-
+# 게시글 업로드
 @login_required 
-def post(request):
+def post(request): # 게시글 업로드
     if request.method =="GET":
         return render(request, "upload.html")
 
@@ -40,8 +35,8 @@ def post(request):
         return redirect('/')
 
         
-    
-def post_detail(request, id):
+# 게시글 읽기    
+def post_detail(request, id): 
     my_feed = Feed.objects.get(id=id)
 
     comment = Comment.objects.filter(feed_id=id).order_by('created_at')
@@ -74,22 +69,16 @@ def post_detail(request, id):
         'same_feed_categorys' :same_feed_categorys
     }
     return render(request, 'index.html', context)
-
-def post_delete(request, id):
+# 게시글 삭제
+def post_delete(request, id): #
     post = Feed.objects.get(id=id)
     post.delete()
     return redirect('/')
     
-    
-def post_edit(request, id):
-    post = Feed.objects.get(id=id)
-    context = {
-        'post': post,
-    }
-    return render(request, 'update.html', context)
 
 
-def post_update(request, id):
+#게시글 수정
+def post_update(request, id): 
     if request.method == "GET":
         post = Feed.objects.get(id=id)
         return render(request, 'update.html', {"post":post})
@@ -108,11 +97,13 @@ def post_update(request, id):
 
 
 
-class TagCloudTV(TemplateView):
+
+
+class TagCloudTV(TemplateView): # 태그
     template_name = 'taggit/tag_cloud_view.html'
 
 
-class TaggedObjectLV(ListView):
+class TaggedObjectLV(ListView): # 태그
     template_name = 'taggit/tag_with_post.html'
     model = Feed
 
@@ -124,8 +115,8 @@ class TaggedObjectLV(ListView):
         context['tagname'] = self.kwargs['tag']
         return context
 
-
-def search(request):
+# 검색
+def search(request): 
     q = request.POST.get('q', "")  # I am assuming space separator in URL like "random stuff"
     search_menu = request.POST.get('search_menu', "")
     feed_cate = Feed.objects.all().order_by('-category')
@@ -175,8 +166,8 @@ def search(request):
         }
     return render(request, 'search.html', context)
 
-
-def write_comment(request, id): # 댓글 쓰기
+# 댓글 쓰기
+def write_comment(request, id): 
     if request.method == 'POST':
         current_comment = Feed.objects.get(id=id)
         comment = request.POST.get('comment')
@@ -189,8 +180,8 @@ def write_comment(request, id): # 댓글 쓰기
 
     return redirect('contents:post_detail', id)
 
-
-def delete_comment(request, feed_id): # 댓글 삭제
+# 댓글 삭제
+def delete_comment(request, feed_id): 
     if request.method == 'POST':
         comment = Comment.objects.get(id= feed_id)        
         if comment.user == request.user:

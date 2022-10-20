@@ -10,8 +10,6 @@ from django.http import JsonResponse
 from contents.models import Feed
 from django.contrib import auth
 
-
-
 import re
 import requests
 
@@ -25,7 +23,7 @@ from .tokens import account_activation_token
 
 
 # Create your views here.
-def signup(request):
+def signup(request): # 회원가입
     if request.method == 'GET':
         return render(request, 'signup.html')
         
@@ -80,7 +78,7 @@ def signup(request):
                 return render(request, 'login.html') # 회원가입이 완료되었으므로 로그인 페이지로 이동
 
 # 계정 활성화 함수(토큰을 통해 인증)
-def activate(request, uidb64, token):
+def activate(request, uidb64, token): # 계정 활성화
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -94,7 +92,7 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'home.html', {'error' : '계정 활성화 오류'})
 
-def login(request):
+def login(request): #로그인
     if request.method == 'GET':
         user = request.user.is_authenticated
         if user:
@@ -113,7 +111,7 @@ def login(request):
             return render(request, 'login.html', {'error':'이메일 인증 or 이메일 패스워드를 확인해 주세요!'})
 
 @login_required
-def logout(request):   #로그아웃 함수
+def logout(request):   #로그아웃 
     auth.logout(request) # 인증 되어있는 정보를 없애기
     return redirect("/")
 
@@ -124,7 +122,7 @@ def delete(request):   #회원탈퇴
     return render(request, 'signup.html')
 
 
-def update(request, id):
+def update(request, id): # 회원정보 수정
     if request.method == 'GET':# 프로필 수정 페이지 접근
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
@@ -159,7 +157,7 @@ def update(request, id):
             user.save()
         return render(request, 'profile_edit.html')
     
-def profileupload(request, id):
+def profileupload(request, id): # 프로필 사진 수정
     if request.method == 'GET':
 
         feed = Feed.objects.all().order_by('-created_at')
@@ -189,7 +187,7 @@ def profileupload(request, id):
         user.save()
         return render(request, 'profileupload.html')
 
-def password(request, id): # 비밀번호 변경 페이지 접근
+def password(request, id): # 비밀번호
 
     if request.method == 'GET':# 프로필 수정 페이지 접근
         feed = Feed.objects.all().order_by('-created_at')
@@ -240,9 +238,8 @@ def password(request, id): # 비밀번호 변경 페이지 접근
             return render(request, 'profile_edit_password.html', {'error':'비밀번호가 일치하지 않습니다'})
         
 @login_required
-def user_view(request):
+def user_view(request): # 
     if request.method == 'GET':
-        # 사용자를 불러오기, exclude와 request.user.username 를 사용해서 '로그인 한 사용자'를 제외하기
         user_list = User.objects.all().exclude(username=request.user.username)
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)

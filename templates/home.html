@@ -70,31 +70,28 @@
             </div>
         </div>
         {% endfor %}
+    </div>
         {% if page_obj.has_other_pages %}
         <ul style="display:flex;list-style: none;"> 
 
         {% if page_obj.has_previous %}
-        <li style="margin:3px;"><a style="text-decoration:none; color: blue;" href="?page={{page_obj.previous_page_number}}">&#10094; Prev</a></li>
+        <li style="margin:3px;"><a style="text-decoration:none; color: black;" href="?page={{page_obj.previous_page_number}}">&#10094; Prev</a></li>
         {% endif %}
 
         {% for page in paginator.page_range %}
         {% if page == page_obj.number %}
             <li style="margin:3px;"><a style="text-decoration:none; color: red;" href="?page={{page}}">{{page}}</a></li>
         {% else %}
-            <li style="margin:3px;"><a style="text-decoration:none; color: blue;" href="?page={{page}}">{{page}}</a></li>
+            <li style="margin:3px;"><a style="text-decoration:none; color: black;" href="?page={{page}}">{{page}}</a></li>
         {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-        <li style="margin:3px;"><a style="text-decoration:none; color: blue;" href="?page={{page_obj.next_page_number}}">&#10095; Next</a></li>
+        <li style="margin:3px;"><a style="text-decoration:none; color: black;" href="?page={{page_obj.next_page_number}}">&#10095; Next</a></li>
         {% endif %}
 
         </ul>
     {% endif%}
-
-    </div>
-
-
 </body>
 </html>
 {% endblock %}

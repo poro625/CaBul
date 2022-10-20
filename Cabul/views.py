@@ -56,13 +56,16 @@ def home(request): # home 화면
             return redirect('users/login')
 
 
-def category_view(request, id):
+def category_view(request, id): # 카테고리 화면
     if request.method == 'GET':
         my_feed = Feed.objects.filter(category=id)
 
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
+        
 
+
+        
         feed_cate = Feed.objects.all().order_by('-category')
         feed_category_all = feed_cate.values_list('category', flat=True)
         feed_category = feed_cate.values_list('category', flat=True).distinct()
