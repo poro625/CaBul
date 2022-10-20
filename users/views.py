@@ -124,6 +124,9 @@ def delete(request):   #회원탈퇴
 
 def update(request, id): # 회원정보 수정
     if request.method == 'GET':# 프로필 수정 페이지 접근
+        user_feed = Feed.objects.filter(user_id=request.user.id)
+        user_feed_count = len(user_feed)
+
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')
@@ -141,7 +144,8 @@ def update(request, id): # 회원정보 수정
             })
         context = {
             'feed_count_all':feed_count_all,
-            'categorys' : feed_categorys
+            'categorys' : feed_categorys,
+            'user_feed_count' : user_feed_count
         }
         return render(request, 'profile_edit.html', context)
     elif request.method =='POST':
@@ -159,6 +163,8 @@ def update(request, id): # 회원정보 수정
     
 def profileupload(request, id): # 프로필 사진 수정
     if request.method == 'GET':
+        user_feed = Feed.objects.filter(user_id=request.user.id)
+        user_feed_count = len(user_feed)
 
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
@@ -177,7 +183,8 @@ def profileupload(request, id): # 프로필 사진 수정
             })
         context = {
             'feed_count_all':feed_count_all,
-            'categorys' : feed_categorys
+            'categorys' : feed_categorys,
+            'user_feed_count' : user_feed_count
         }
         return render(request, 'profileupload.html', context)
     elif request.method =='POST':
@@ -190,6 +197,9 @@ def profileupload(request, id): # 프로필 사진 수정
 def password(request, id): # 비밀번호
 
     if request.method == 'GET':# 프로필 수정 페이지 접근
+        user_feed = Feed.objects.filter(user_id=request.user.id)
+        user_feed_count = len(user_feed)
+
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')
@@ -207,7 +217,8 @@ def password(request, id): # 비밀번호
             })
         context = {
             'feed_count_all':feed_count_all,
-            'categorys' : feed_categorys
+            'categorys' : feed_categorys,
+            'user_feed_count' : user_feed_count
         }
         return render(request, 'profile_edit_password.html', context)
 
@@ -240,7 +251,15 @@ def password(request, id): # 비밀번호
 @login_required
 def user_view(request): #
     if request.method == 'GET':
+
+        # 사용자를 불러오기, exclude와 request.user.username 를 사용해서 '로그인 한 사용자'를 제외하기
+        user_list = User.objects.all().exclude(email=request.user.email)
+
+        user_feed = Feed.objects.filter(user_id=request.user.id)
+        user_feed_count = len(user_feed)
+
         user_list = User.objects.all().exclude(username=request.user.username)
+
         feed = Feed.objects.all().order_by('-created_at')
         feed_count_all = len(feed)
         feed_cate = Feed.objects.all().order_by('-category')
@@ -259,7 +278,8 @@ def user_view(request): #
         context = {
             'user_list': user_list,
             'feed_count_all':feed_count_all,
-            'categorys' : feed_categorys
+            'categorys' : feed_categorys,
+            'user_feed_count' : user_feed_count
         }
         return render(request, 'follow.html', context)
         
@@ -273,7 +293,7 @@ def user_follow(request, id):
         click_user.followee.remove(request.user)
     else:
         click_user.followee.add(request.user)
-    return redirect('users:user-list')      
+    return redirect(request.META['HTTP_REFERER'])     
 
 
 def kakao_social_login(request):
