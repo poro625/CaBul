@@ -37,8 +37,12 @@
             <div style="width: 300px; min-width: 300px; height: 400px; min-height: 400px;">
 
                 <div style="display: flex; flex-direction: row; justify-content: space-between; height: 40px;">
-                    <div style="display: flex; flex-direction: row;"">
-                    <img src="{% get_media_prefix %}{{ feed.user.profile_image }}" alt="" style="width: 20px; height: 20px; border-radius: 10px; margin: 10px 5px 0 5px;">
+                    <div style="display: flex; flex-direction: row;">
+                        {% if feed.user.kakao_profile %}
+                        <img src="{{ feed.user.kakao_profile }}" alt="" style="width: 20px; height: 20px; border-radius: 10px; margin: 10px 5px 0 5px;">
+                        {% else %}
+                        <img src="{% get_media_prefix %}{{ feed.user.profile_image }}" alt="" style="width: 20px; height: 20px; border-radius: 10px; margin: 10px 5px 0 5px;">
+                        {% endif %}
                     <div style="font-weight: bold; margin-top: 7px ;">
                     {{ feed.user.nickname }}
                 </div>
