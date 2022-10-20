@@ -1,24 +1,69 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head >
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"         
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 작성</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
 </head>
-<body>
+<style>
+    *{
+        font-family: 'Jua', sans-serif;
+        font-family: 'Nanum Gothic Coding', monospace;
+    }
+    .basic {
+        width: 400px;
+        height: 300px;
+        position: absolute;
+        left: 40%; //parent인 document기준으로 50% 이동
+        margin-left: -100px;
+        top: 10%; //parent인 documnet기준으로 50% 이동
+        margin-top: -150px;
+
+        width : 470px;
+        height: 720px;
+        
+        border: 1px solid black;
+      } 
+
+
+</style>
+
+<body class="basic">
+
+
     <form action="{% url 'contents:post' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div style="display: flex; flex-direction: column;">
-        <div>제목 <input type="text" name="title" placeholder="제목" /></div>
-        <div>카테고리 <input type="text" name="category" placeholder="카테고리" /></div>
-        <div>태그 <input type="text" name="tag" placeholder="태그, 입력, 하세요" /></div>
+    <div style="display: flex; flex-direction: column;" >
+        <h1>게시글 작성 페이지</h1><hr>
+        <div>제목: <input type="text" name="title" placeholder="제목" /></div>
+        <hr>
+        <div>카테고리: <input type="text" name="category" placeholder="카테고리" /></div>
+        <hr>
+        <div>태그 : <input type="text" name="tag" placeholder="태그, 입력, 하세요" /></div>
+        <hr>
         <div>사진 <input type="file" name="feed_image" placeholder="사진" required="required" value="image" /></div>
-        <textarea type="text" name="content" placeholder="내용 입력..." cols="30" rows="10"></textarea>
+        <hr>
+        <textarea type="text" name="content" placeholder="내용 입력..." cols="20" rows="10"></textarea>
+        <hr>
         <button type="submit">작성하기</button>
     </div>
     </form>
+
+    
+    
+
 </body>
 </html>

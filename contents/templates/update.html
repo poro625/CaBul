@@ -6,21 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 수정성페이지</title>
 </head>
-<body>
-    <h1>게시글 수정 페이지</h1>
 
-    <form action= "{% url 'contents:post_update' post.id %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div>
-        <input type="text" name="title" placeholder="{{ context.feed }}">
-        </div>
-        <div>
-        <textarea name="content" cols="30" rows="10">{{ context.comment }}</textarea>
-        </div>
-        <div>사진<input type="file" name="image" placeholder="사진" required="required" value="image" /></div>
-        <input type="submit"/>
-      
-    </form>
-
+<center>
+<body class="container">
+    <div class="container">
+        <h1>게시글 수정 페이지</h1>
+        <form action= "{% url 'contents:post_update' post.id %}" method="POST">
+            {% csrf_token %}
+            <div >Titile:<input type="text" name="title" placeholder="{{ post.title }}">
+            </div>
+            <div> Content:<textarea name="content" cols="40" rows="20">{{ post.content }}</textarea>
+            </div>
+            <div>사진<input type="file" name="image" placeholder="사진" required="required" value="image" /></div>
+            <input type="submit"/>
+        </form>
+        
+    </div>
+</center>
 </body>
 </html>
