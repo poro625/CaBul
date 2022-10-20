@@ -36,6 +36,3 @@ class Comment(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='Comments')
-

@@ -3,6 +3,9 @@ from unicodedata import category
 from gc import get_objects
 
 from contents.models import Feed, Comment
+
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView
@@ -42,13 +45,34 @@ def post(request):
     
 def post_detail(request, id):
     my_feed = Feed.objects.get(id=id)
-    comment = Comment.objects.filter(feed_id=id).order_by('-created_at')
+
+    comment = Comment.objects.filter(feed_id=id).order_by('created_at')
+
+    feed = Feed.objects.all().order_by('-created_at')
+    feed_count_all = len(feed)
+
     feed_cate = Feed.objects.all().order_by('-category')
+    feed_category_all = feed_cate.values_list('category', flat=True)
     feed_category = feed_cate.values_list('category', flat=True).distinct()
+    feed_categorys = []
+    for cate in feed_category:
+        cate_count = 0
+        for i in feed_category_all:
+            if cate == i:
+                cate_count += 1
+        feed_categorys.append({
+            'category' : cate,
+            'cate_count' : cate_count
+        })
+
+    same_feed_categorys = Feed.objects.filter(category=my_feed.category)
+
     context = {
         'feeds':my_feed,
-        'categorys':feed_category,
-        'comments': comment
+        'comments': comment,
+        'feed_count_all':feed_count_all,
+        'categorys' : feed_categorys,
+        'same_feed_categorys' :same_feed_categorys
     }
     return render(request, 'index.html', context)
 
@@ -81,7 +105,7 @@ def post_update(request, id):
         img = post.image
         update_category(img, post)
         
-        return redirect('contents:post_detail', post.id)
+        return redirect('contents:post_detail', id)
 
 
 
@@ -119,20 +143,38 @@ def search(request):
     elif search_menu == '3':
         query = Q(tags__name__icontains=q)
         searched = Feed.objects.filter(query)
-   
 
+    
+    elif search_menu == '4':
+        query = Q(category__icontains=q)
+        searched = Feed.objects.filter(query)
+    else :
+        return redirect('/')
+    
+    feed = Feed.objects.all().order_by('-created_at')
+    feed_count_all = len(feed)
 
-    return render(request, 'search.html',{'searched':searched, 'q': q ,'categorys':feed_category})
-
-
-
-def detail_comment(request, id ): # 댓글 읽기
-    my_feed = Feed.objects.get(id=id)
-    comment = Comment.objects.filter(tweet_id=id).order_by('-created_at')
-
-    return render(request,'index.html', my_feed=my_feed, comment=comment )
-
-
+    feed_cate = Feed.objects.all().order_by('-category')
+    feed_category_all = feed_cate.values_list('category', flat=True)
+    feed_category = feed_cate.values_list('category', flat=True).distinct()
+    feed_categorys = []
+    for cate in feed_category:
+        cate_count = 0
+        for i in feed_category_all:
+            if cate == i:
+                cate_count += 1
+        feed_categorys.append({
+            'category' : cate,
+            'cate_count' : cate_count
+        })
+    
+    context = {
+        'searched':searched,
+        'q': q,
+        'feed_count_all':feed_count_all,
+        'categorys' : feed_categorys
+        }
+    return render(request, 'search.html', context)
 
 
 def write_comment(request, id): # 댓글 쓰기
@@ -146,19 +188,15 @@ def write_comment(request, id): # 댓글 쓰기
         FC.feed = current_comment
         FC.save()
 
-    return redirect('/')
-
+    return redirect('contents:post_detail', id)
 
 
 def delete_comment(request, feed_id): # 댓글 삭제
-
-
     if request.method == 'POST':
-
         comment = Comment.objects.get(id= feed_id)        
         if comment.user == request.user:
             comment.delete()
-            return redirect('/')
+            return redirect('contents:post_detail', id)
         else:
             return HttpResponse('권한이 없습니다!')
 
