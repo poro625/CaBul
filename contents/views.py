@@ -187,12 +187,15 @@ def write_comment(request, id):
     if request.method == 'POST':
         current_comment = Feed.objects.get(id=id)
         comment = request.POST.get('comment')
-
-        FC = Comment()
-        FC.comment = comment
-        FC.user = request.user
-        FC.feed = current_comment
-        FC.save()
+        
+        if comment == "":
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            FC = Comment()
+            FC.comment = comment
+            FC.user = request.user
+            FC.feed = current_comment
+            FC.save()
 
     return redirect('contents:post_detail', id)
 
@@ -202,7 +205,7 @@ def delete_comment(request, feed_id):
         comment = Comment.objects.get(id= feed_id)        
         if comment.user == request.user:
             comment.delete()
-            return redirect('contents:post_detail', id)
+            return redirect(request.META['HTTP_REFERER'])
         else:
             return HttpResponse('권한이 없습니다!')
 
