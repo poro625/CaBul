@@ -201,5 +201,19 @@ def delete_comment(request, feed_id): # 댓글 삭제
             return HttpResponse('권한이 없습니다!')
 
 
+@login_required(login_url='users:login')
+def likes(request, id):
+    if request.method == 'POST': #요청이 post로 왔다면 아래 if문
+        post = Feed.objects.get(id=id)#id값과 post에서 받아온 데이터와 같은 친구를 불러오겠다.
+        									#그 친구를 post에 저장
+        
+    if post.like_authors.filter(id=request.user.id).exists():#post에 id=request.user.id가 있다면 True, 없으면 False로 분기문 탈출
+        post.like_authors.remove(request.user) #있다면 remove로 제거
+        
+    else:
+        post.like_authors.add(request.user)	#add로 추가
+    return redirect(request.META['HTTP_REFERER'])
+
+
 
 

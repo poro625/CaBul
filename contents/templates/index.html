@@ -62,6 +62,19 @@
                             {{ feeds.title }}
                         </div>
                         <div>
+                            <form action='{% url 'contents:post_likes' feeds.id %}' method='post'>
+                                {% csrf_token %}
+                                <div class='post_detail-feed_box-like_bar'>
+                                    
+                                    {% if user in feeds.like_authors.all %} <!--post.like_authors.all에 user가 있다면 아래 if문 돌기-->
+                                    <div class='post_detail-feed_box-like_wrap'><button class='post_detail-feed_box-like_button'><img style="width: 20px; height: 20px; margin: 5px 10px 0 0;" src="{% static './icon/heart_bk.png'%}"/></button></div>
+                                    {% else %}
+                                    <div class='post_detail-feed_box-like_wrap'><button class='post_detail-feed_box-like_button'><img style="width: 20px; height: 20px; margin: 5px 10px 0 0;" src="{% static './icon/heart.png'%}"/></button></div>
+                                    {% endif %}
+                                    <div class='post_detaile-feed_box-like_count_text'>좋아요{{feeds.like_authors.count}}개</div>
+                                
+                                </div>
+                            </form>
                             <img src="/static/icon/heart.png" alt="" style="width: 20px; height: 20px; margin: 5px 10px 0 0;">
                         </div>
                     </div>
