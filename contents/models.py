@@ -20,6 +20,7 @@ class Feed(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=30)
+    like_authors = models.ManyToManyField(User, related_name='like_posts')
     
     
     
