@@ -113,6 +113,8 @@
                             {% if feeds.user == request.user %}
                             <button onclick="location.href='{% url 'contents:post_delete' feeds.id %}'">삭제</button>
                             <button onclick="location.href='{% url 'contents:post_update' feeds.id %}'">수정</button>
+                            {% elif feeds.user == request.user and comment.comment %}
+                            <button onclick="location.href='{% url 'contents:post_delete' feeds.id %}'">삭제</button>
                             {% endif %}
                         </div>
                         <div style="text-align: right; margin-right: 10px; font-size: 10pt; color: #aaaaaa;">
@@ -138,10 +140,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 
     <div class="FeedBoxCont">
         {% for same_feed_category in same_feed_categorys %}
