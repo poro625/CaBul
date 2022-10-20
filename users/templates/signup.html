@@ -48,7 +48,6 @@
         <hr style="width: 100px;">
       </div>
       <div class="wrap">
-        <form class="form-area">
         <form action="{% url 'users:signup' %}" method="POST">
           {% csrf_token %}
           <div class="form-group mt-2 mb-2">
@@ -80,7 +79,10 @@
           {{ error }}
         </div>
         {% endif %}
+
         <button type="submit"  class="btn btn-secondary" style="width: 300px;">가입버튼</button>
+        </form>
+
       </div>
     </div>
     <div
