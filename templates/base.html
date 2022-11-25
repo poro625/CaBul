@@ -136,7 +136,7 @@
                 <div style="display: flex; flex-direction: column; text-align: center;">
                     
                     <img src="{% get_media_prefix %}{{ user.profile_image }}" alt="" style="width: 140px; height: 140px; object-fit: cover; border-radius: 70px; margin: 25px;">
-                    <img onclick="location.href='/users/profileupload/{{ user.id }}'" src="media/default.png" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px;">
+                    <div onclick="location.href='/users/profileupload/{{ user.id }}'" style="width: 30px; height: 30px; object-fit: cover; border-radius: 15px; position: absolute; top: 220px; left: 130px; font-size: 20pt; background-color: #aaaaaa; color: #fafafa; cursor: pointer;">+</div>
                 </div>
                 <div style="display: flex; flex-direction: column;">
                     <div style="margin: 30px 0 20px 0;">

@@ -5,9 +5,6 @@ from django.conf import settings
 from users.models import User
 from django.db import models
 
-# Create your models h
-# 
-# ere.
 
 class TaggedFeed(TaggedItemBase):
     content_object = models.ForeignKey('Feed', on_delete=models.CASCADE)
